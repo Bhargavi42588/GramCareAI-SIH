@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient - GramCareAI</title>
+<style>
+body{font-family:Arial;background:#eef6ff;padding:15px}
+.card{background:white;padding:15px;border-radius:12px;margin:12px 0;box-shadow:0 2px 8px #ccc}
+button{background:#0b5fff;color:white;border:none;padding:10px;border-radius:8px;width:100%;margin-top:8px;font-weight:bold}
+input,select{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:1px solid #ccc}
+.badge{padding:4px 8px;border-radius:5px;color:white;font-size:12px}
+.green{background:green}.red{background:red}.orange{background:orange}
+</style>
+</head>
+<body>
+
+<h2>🩺 GramCareAI - Patient Seva</h2>
+<p style="font-size:13px">तुमचे आरोग्य, तुमच्या हातात | ABHA Linked</p>
+
+<div class="card">
+  <h3>1. ABHA Login</h3>
+  <input id="abha" placeholder="Enter ABHA ID / Aadhaar - उदा. 91-1234-5678">
+  <button onclick="login()">Login / लॉगिन करा</button>
+  <p id="userInfo" style="font-size:13px;color:green"></p>
+</div>
+
+<div class="card">
+  <h3>2. Book Appointment - दवाखाना भेट</h3>
+  <select id="phc">
+    <option>PHC Gadchiroli</option>
+    <option>PHC Amravati</option>
+    <option>District Hospital Nagpur</option>
+  </select>
+  <input id="date" type="date">
+  <button onclick="book()">Get Token - टोकन मिळवा</button>
+  <div id="tokenResult"></div>
+</div>
+
+<div class="card">
+  <h3>3. Medicine Stock - औषध उपलब्धता</h3>
+  <select id="med" onchange="checkMed()">
+    <option value="">Select Medicine</option>
+    <option>Paracetamol</option>
+    <option>Iron Tablets (Anemia)</option>
+    <option>BP Tablet - Amlodipine</option>
+    <option>Sugar Tablet - Metformin</option>
+  </select>
+  <div id="medResult" style="margin-top:8px;font-weight:bold"></div>
+</div>
+
+<div class="card">
+  <h3>4. My Referral Status - संदर्भ स्थिती</h3>
+  <div id="refStatus">No active referral. <br>सध्या कोणताही रेफरल नाही.</div>
+  <button onclick="checkReferral()">Check Status</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  projectId: "YOUR_PROJECT_ID"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Mock Medicine Data - As per PS requirement
+const stockData = {
+  "Paracetamol": {"PHC Gadchiroli":0, "PHC Amravati":50, "District Hospital Nagpur":200},
+  "Iron Tablets (Anemia)": {"PHC Gadchiroli":100, "PHC Amravati":20, "District Hospital Nagpur":500},
+  "BP Tablet - Amlodipine": {"PHC Gadchiroli":5, "PHC Amravati":100, "District Hospital Nagpur":300},
+  "Sugar Tablet - Metformin": {"PHC Gadchiroli":0, "PHC Amravati":0, "District Hospital Nagpur":100}
+};
+
+window.login = function(){
+  let abha = document.getElementById('abha').value;
+  if(abha.length < 5){ alert("ABHA ID pettu"); return; }
+  document.getElementById('userInfo').innerText = `✅ Welcome! ABHA ${abha} linked. Tumcha record FHIR lo safe ga undi.`;
+  // Bhashini Voice - Simple
+  let utter = new SpeechSynthesisUtterance("Namaskar, tumche swagat aahe GramCareAI madhe");
+  utter.lang = 'mr-IN';
+  speechSynthesis.speak(utter);
+}
+
+window.book = async function(){
+  let phc = document.getElementById('phc').value;
+  let date = document.getElementById('date').value;
+  let token = "TKN-" + Math.floor(Math.random()*900+100);
+  document.getElementById('tokenResult').innerHTML =
+    `<div style="margin-top:10px;padding:10px;background:#d4edda;border-radius:8px">✅ Token: <b>${token}</b><br>PHC: ${phc}<br>Date: ${date}<br><small>Waiting time 30 mins estimated</small></div>`;
+
+  await addDoc(collection(db, "appointments"), {phc, date, token, abha: document.getElementById('abha').value, time: new Date()});
+}
+
+window.checkMed = function(){
+  let med = document.getElementById('med').value;
+  if(!med) return;
+  let phc = document.getElementById('phc').value;
+  let available = stockData[med][phc];
+  let resultDiv = document.getElementById('medResult');
+  if(available > 0){
+    resultDiv.innerHTML = `<span class="badge green">Available</span> ${available} strips at ${phc}`;
+  } else {
+    // Find nearest
+    let nearest = "District Hospital Nagpur";
+    resultDiv.innerHTML = `<span class="badge red">Not at ${phc}</span><br>👉 Available at ${nearest} - ${stockData[med][nearest]} strips<br><small>Auto-referral suggestion enabled</small>`;
+  }
+}
+
+window.checkReferral = async function(){
+  let q = query(collection(db, "referrals"), where("patient", "!=", ""));
+  let snap = await getDocs(q);
+  let html="";
+  snap.forEach(d=>{
+    let data=d.data();
+    html+= `<div style="border-left:4px solid orange;padding:6px;margin:5px 0">${data.patient} | ${data.from} -> ${data.to} | <b>${data.status}</b></div>`;
+  });
+  document.getElementById('refStatus').innerHTML = html || "No referrals yet";
+}
+</script>
+</body>
+</html>

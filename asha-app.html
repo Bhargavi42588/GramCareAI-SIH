@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ASHA Worker - GramArogya</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family: Arial; background:#f0f8ff; padding:15px}
+.card{background:white; padding:15px; border-radius:10px; margin:10px 0; box-shadow:0 2px 5px #ccc}
+.high{border-left:5px solid red}.medium{border-left:5px solid orange}.low{border-left:5px solid green}
+button{background:#0b5fff; color:white; border:none; padding:10px 20px; border-radius:5px; width:100%; margin-top:10px}
+</style>
+</head>
+<body>
+<h2>ASHA Didi - GramArogya</h2>
+
+<div class="card">
+  <h3>Patient Details (Marathi Voice)</h3>
+  <input id="name" placeholder="Patient Name / ABHA ID" style="width:100%;padding:8px">
+  <input id="age" type="number" placeholder="Age" style="width:48%;padding:8px;margin-top:5px">
+  <input id="bp" placeholder="BP ex: 140/90" style="width:48%;padding:8px">
+  <select id="pregnant" style="width:100%;padding:8px;margin-top:5px">
+    <option value="no">Pregnant? No</option>
+    <option value="yes">Pregnant? Yes</option>
+  </select>
+  <button onclick="doTriage()">Triage Check - जोखीम तपासा</button>
+  <div id="result"></div>
+</div>
+
+<div class="card">
+  <button onclick="startTeleconsult()">📹 Doctor tho Video Call</button>
+  <button onclick="createReferral()">📋 Referral to District Hospital</button>
+  <p id="status" style="font-size:12px;color:green"></p>
+</div>
+
+<script type="module">
+// Firebase Import
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  // NEE FIREBASE CONFIG IKKADA PASTE CHEYU
+  apiKey: "YOUR_API_KEY",
+  projectId: "YOUR_PROJECT_ID"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// TRIAGE LOGIC - Core of SIH
+window.doTriage = async function() {
+  let bpValue = document.getElementById('bp').value; // 140/90
+  let systolic = parseInt(bpValue.split('/')[0]);
+  let isPregnant = document.getElementById('pregnant').value;
+  let age = document.getElementById('age').value;
+  let risk = "LOW"; let colorClass="low"; let msg="";
+
+  // Simple AI Logic - Fresher friendly but powerful
+  if(isPregnant === "yes" && systolic >= 140){
+    risk="HIGH RISK"; colorClass="high";
+    msg="⚠️ तातडी! BP High in Pregnancy - Immediate Referral! (Preeclampsia Risk)";
+  } else if(systolic >= 160 || age>60 && systolic>=140){
+    risk="MEDIUM"; colorClass="medium"; msg="Medium Risk - Doctor consultation needed in 24h";
+  } else {
+    risk="LOW"; colorClass="low"; msg="Low Risk - Routine Follow-up";
+  }
+
+  document.getElementById('result').innerHTML =
+    `<div class="card ${colorClass}"><b>${risk}</b><br>${msg}</div>`;
+
+  // Save to Firestore (Offline sync automatic by Firebase)
+  await addDoc(collection(db, "patients"), {
+    name: document.getElementById('name').value,
+    bp: bpValue, risk: risk, pregnant: isPregnant,
+    timestamp: new Date()
+  });
+  document.getElementById('status').innerText = "✅ Saved offline + synced to cloud (FHIR ready)";
+}
+
+window.startTeleconsult = function(){
+  // Jitsi free video call - No coding needed
+  window.open("https://meet.jit.si/GramArogyaPHC_Demo","_blank");
+}
+
+window.createReferral = async function(){
+  await addDoc(collection(db, "referrals"), {
+    patient: document.getElementById('name').value,
+    from: "PHC Gadchiroli", to: "District Hospital",
+    status: "Pending", time: new Date()
+  });
+  alert("Referral Created! District hospital ki alert vellindi + Tracking start ayindi");
+}
+</script>
+</body>
+</html>

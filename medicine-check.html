@@ -1,0 +1,11 @@
+// Simple Medicine Availability
+const medicineStock = {
+  "Paracetamol": {"PHC_Gadchiroli": 0, "PHC_5km_away": 50},
+  "Iron Tablets": {"PHC_Gadchiroli": 100, "PHC_5km_away": 20}
+}
+function checkMedicine(name){
+  if(medicineStock[name]["PHC_Gadchiroli"]==0){
+    return `PHC lo ledu, kani 5km lo ${medicineStock[name]["PHC_5km_away"]} tablets unnai`;
+  }
+  return "Available at your PHC";
+}
