@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramCareAI - SIH Final with Log Book</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f0f4f8;}
+.header{background:linear-gradient(135deg,#1e40af,#1e3a8a);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.tabs{display:flex;background:white;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+.tab{flex:1;padding:14px;text-align:center;cursor:pointer;border-bottom:3px solid transparent;font-weight:600;font-size:13px;}
+.tab.active{color:#1e40af;border-bottom-color:#1e40af;background:#eff6ff;}
+.content{padding:16px;max-width:600px;margin:0 auto;}
+.card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px;}
+.input{width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;margin:8px 0;font-size:15px;}
+.input:focus{border-color:#1e40af;outline:none;}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px;margin:8px 0;}
+.btn-blue{background:#1e40af;color:white;}
+.btn-green{background:#16a34a;color:white;}
+.btn-red{background:#dc2626;color:white;}
+.btn-gray{background:#6b7280;color:white;}
+.queue-item{background:white;border:2px solid #e5e7eb;border-radius:12px;padding:14px;margin:8px 0;cursor:pointer;}
+.queue-item:hover{border-color:#1e40af;}
+.token-box{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:12px;padding:16px;text-align:center;margin:16px 0;}
+.log-table{width:100%;border-collapse:collapse;font-size:12px;}
+.log-table th{background:#1e40af;color:white;padding:8px;text-align:left;}
+.log-table td{padding:8px;border-bottom:1px solid #e5e7eb;}
+.badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-orange{background:#ffedd5;color:#9a3412;}
+.receipt{background:#f0fdf4;border:2px dashed #16a34a;padding:16px;border-radius:12px;margin:12px 0;}
+</style>
+</head>
+<body>
+<div class="header">
+<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">🏥</span><div><b>GramCareAI</b><br><small style="font-size:10px;">PHC Gadchiroli - Final</small></div></div>
+<div style="font-size:12px;">🟢 Online</div>
+</div>
+<div class="tabs">
+<div class="tab active" onclick="showTab('patient')">👤 Patient</div>
+<div class="tab" onclick="showTab('asha')">👩‍⚕️ ASHA</div>
+<div class="tab" onclick="showTab('doctor')">👨‍⚕️ Doctor</div>
+<div class="tab" onclick="showTab('logbook')">📚 Log Book</div>
+</div>
+<div class="content">
+<div id="patient-tab">
+<div class="card">
+<h3>ABHA Verification</h3>
+<input id="p-abha" class="input" placeholder="ABHA 14-digit e.g. 12345678901234">
+<input id="p-name" class="input" placeholder="Full Name e.g. Archana">
+<input id="p-village" class="input" placeholder="Village e.g. Bapatla">
+<button class="btn btn-blue" onclick="verifyPatient()">✓ Verify ABHA</button>
+<div id="p-verify-status"></div>
+<button id="gen-token-btn" class="btn btn-green" style="display:none;" onclick="genToken()">🎟️ Generate Token</button>
+<div id="p-token-box"></div>
+</div>
+</div>
+<div id="asha-tab" style="display:none;">
+<div class="card">
+<h3>ASHA Offline Registration</h3>
+<input id="a-name" class="input" placeholder="Patient Name">
+<input id="a-village" class="input" placeholder="Village">
+<select id="a-symptom" class="input"><option>Fever</option><option>Cough</option><option>Headache</option><option>Diarrhea</option></select>
+<button class="btn btn-blue" onclick="saveAsha()">💾 Save Offline</button>
+<div id="asha-list"></div>
+</div>
+</div>
+<div id="doctor-tab" style="display:none;">
+<div class="card">
+<h3>👨‍⚕️ Dr. Rajesh Kumar, MBBS, MD</h3><small>PHC Gadchiroli | Today Queue</small>
+<div id="queue"></div>
+</div>
+<div id="prescription-area" style="display:none;" class="card">
+<h3 id="pres-title" style="color:#b45309;">Prescription for: </h3>
+<p id="pres-sub"></p>
+<div style="background:#f0fdf4;padding:12px;border-radius:12px;margin-top:12px;">
+<label>Diagnosis</label>
+<input id="diag" class="input" placeholder="Viral Fever">
+<label>Medicine Allotment (After Token Selection)</label>
+<select id="med1" class="input"><option value="">Select Medicine 1</option><option value="Paracetamol-150">Paracetamol - 150 Avl</option><option value="Azithromycin-80">Azithromycin - 80 Avl</option><option value="ORS-200">ORS - 200 Avl</option><option value="Cetirizine-100">Cetirizine - 100 Avl</option></select>
+<input id="dos1" class="input" placeholder="Dosage e.g. 1 tab twice daily x 3 days">
+<select id="med2" class="input"><option value="">Medicine 2 (Optional)</option><option value="Paracetamol-150">Paracetamol</option><option value="Vitamin-90">Vitamin C - 90 Avl</option></select>
+<input id="dos2" class="input" placeholder="Dosage 2">
+<label>Advice</label>
+<textarea id="advice" class="input" placeholder="Take rest, drink more water"></textarea>
+<button class="btn btn-green" onclick="allotMedicine()">✅ Allot Medicine & Save</button>
+<button class="btn btn-gray" onclick="closePres()">Close</button>
+</div>
+</div>
+<div id="receipt-area"></div>
+</div>
+<div id="logbook-tab" style="display:none;">
+<div class="card">
+<h3>📚 Log Book - Appointment & Prescription History</h3>
+<p style="font-size:12px;color:#6b7280;margin:8px 0;">Patient took appointment and doctor given prescription log</p>
+<div style="display:flex;gap:8px;margin:12px 0;">
+<div style="flex:1;background:#eff6ff;padding:10px;border-radius:10px;text-align:center;"><b id="log-total">0</b><br><small>Total</small></div>
+<div style="flex:1;background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;"><b id="log-pres">0</b><br><small>Prescribed</small></div>
+<div style="flex:1;background:#fef2f2;padding:10px;border-radius:10px;text-align:center;"><b id="log-pending">0</b><br><small>Pending</small></div>
+</div>
+<button class="btn btn-red" onclick="clearLogBook()">🗑️ Clear All Logs</button>
+<div style="overflow-x:auto;">
+<table class="log-table" id="log-table">
+<thead><tr><th>Token</th><th>Patient</th><th>Village</th><th>Diagnosis</th><th>Medicine</th><th>Time</th><th>Action</th></tr></thead>
+<tbody id="log-body"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<script>
+let tokens=JSON.parse(localStorage.getItem('gc_tokens')||'[]');
+let logs=JSON.parse(localStorage.getItem('gc_logs')||'[]');
+let selectedToken=null;
+function showTab(t){
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+document.getElementById(t+'-tab').style.display='block';
+['patient','asha','doctor','logbook'].forEach(k=>{if(k!==t) document.getElementById(k+'-tab').style.display='none';});
+document.querySelectorAll('.tab').forEach(el=>{if(el.textContent.toLowerCase().includes(t)) el.classList.add('active');});
+if(t==='doctor') renderQueue();
+if(t==='logbook') renderLogBook();
+}
+function verifyPatient(){
+const abha=document.getElementById('p-abha').value;
+const name=document.getElementById('p-name').value;
+if(abha.length<5||!name){alert('Enter ABHA & Name');return;}
+document.getElementById('p-verify-status').innerHTML='<div style="background:#dcfce7;padding:10px;border-radius:8px;margin:8px 0;">✅ Verified: '+name+'</div>';
+document.getElementById('gen-token-btn').style.display='block';
+}
+function genToken(){
+const abha=document.getElementById('p-abha').value;
+const name=document.getElementById('p-name').value;
+const vill=document.getElementById('p-village').value||'Unknown';
+const tnum='TKN-'+Math.floor(100+Math.random()*900);
+const time=new Date().toLocaleTimeString();
+const tok={id:tnum,name:name,village:vill,abha:abha,time:time,status:'pending',type:'patient'};
+tokens.push(tok);
+logs.push({token:tnum,name:name,village:vill,abha:abha,diagnosis:'Pending',medicine:'Not yet',time:time,status:'Pending',date:new Date().toLocaleString()});
+localStorage.setItem('gc_tokens',JSON.stringify(tokens));
+localStorage.setItem('gc_logs',JSON.stringify(logs));
+document.getElementById('p-token-box').innerHTML='<div class="token-box"><h1 style="color:#1e40af;font-size:36px;">'+tnum+'</h1><small>Token required for check-in</small><br><button class="btn btn-gray" onclick="showTab(\'doctor\')">Go to Doctor</button></div>';
+renderQueue();renderLogBook();
+}
+function saveAsha(){
+const name=document.getElementById('a-name').value;
+const vill=document.getElementById('a-village').value;
+const sym=document.getElementById('a-symptom').value;
+if(!name){alert('Enter Name');return;}
+const tnum='ASHA-'+Math.floor(100+Math.random()*900);
+const time=new Date().toLocaleTimeString();
+const tok={id:tnum,name:name,village:vill,time:time,status:'pending',type:'asha',symptom:sym};
+tokens.push(tok);
+logs.push({token:tnum,name:name,village:vill,abha:'ASHA',diagnosis:sym,medicine:'Pending',time:time,status:'Pending',date:new Date().toLocaleString()});
+localStorage.setItem('gc_tokens',JSON.stringify(tokens));
+localStorage.setItem('gc_logs',JSON.stringify(logs));
+document.getElementById('a-name').value='';document.getElementById('a-village').value='';
+renderAsha();renderQueue();renderLogBook();
+}
+function renderAsha(){
+let h='<h4 style="margin-top:12px;">Offline: '+tokens.filter(t=>t.type==='asha').length+'</h4>';
+tokens.filter(t=>t.type==='asha').forEach(t=>{h+='<div class="queue-item"><b>'+t.id+' - '+t.name+'</b><br><small>'+t.village+'</small></div>';});
+document.getElementById('asha-list').innerHTML=h;
+}
+function renderQueue(){
+let q=document.getElementById('queue');
+if(tokens.length===0){q.innerHTML='<p>No tokens</p>';return;}
+let h='';
+tokens.slice().reverse().forEach(t=>{
+h+='<div class="queue-item" onclick="selectToken(\''+t.id+'\')"><b>'+t.id+' - '+t.name+'</b><br><small>'+t.village+' | '+t.time+' | <span class="badge '+(t.status==='prescribed'?'badge-green':'badge-orange')+'">'+t.status+'</span></small><br><span style="color:#d97706;font-size:13px;">👉 Click to prescribe medicines</span></div>';
+});
+q.innerHTML=h;
+}
+function selectToken(id){
+selectedToken=tokens.find(t=>t.id===id);
+document.getElementById('prescription-area').style.display='block';
+document.getElementById('pres-title').textContent='Prescription for: '+selectedToken.name;
+document.getElementById('pres-sub').textContent='Token: '+selectedToken.id;
+document.getElementById('prescription-area').scrollIntoView({behavior:'smooth'});
+}
+function closePres(){document.getElementById('prescription-area').style.display='none';}
+function allotMedicine(){
+const diag=document.getElementById('diag').value.trim();
+const m1=document.getElementById('med1').value;
+const d1=document.getElementById('dos1').value.trim();
+if(!diag||!m1||!d1){alert('Enter Diagnosis & Medicine');return;}
+const m2=document.getElementById('med2').value;
+const d2=document.getElementById('dos2').value;
+const adv=document.getElementById('advice').value;
+const time=new Date().toLocaleString();
+selectedToken.status='prescribed';
+selectedToken.diagnosis=diag;
+localStorage.setItem('gc_tokens',JSON.stringify(tokens));
+let logEntry=logs.find(l=>l.token===selectedToken.id);
+if(logEntry){logEntry.diagnosis=diag;logEntry.medicine=m1+(m2?', '+m2:'');logEntry.dosage=d1;logEntry.advice=adv;logEntry.status='Prescribed';logEntry.prescribedAt=time;}
+localStorage.setItem('gc_logs',JSON.stringify(logs));
+const receiptHtml='<div class="receipt"><h3 style="color:#16a34a;">✅ Medicine Allotted</h3><p><b>Patient:</b> '+selectedToken.name+' ('+selectedToken.id+')</p><p><b>Diagnosis:</b> '+diag+'</p><p><b>Medicine:</b> '+m1+' - '+d1+'</p>'+(m2?'<p><b>Medicine2:</b> '+m2+' - '+d2+'</p>':'')+'<p><small>By Dr. Rajesh Kumar | '+time+'</small></p><div style="display:flex;gap:8px;margin-top:12px;"><button class="btn btn-blue" style="flex:1;" onclick="window.print()">🖨️ Print</button><button class="btn btn-red" style="flex:1;" onclick="deletePrescription(\''+selectedToken.id+'\')">🗑️ Delete</button></div><button class="btn btn-gray" onclick="closeReceipt()">Close</button></div>';
+document.getElementById('receipt-area').innerHTML=receiptHtml;
+document.getElementById('prescription-area').style.display='none';
+renderQueue();renderLogBook();
+document.getElementById('diag').value='';document.getElementById('med1').value='';document.getElementById('dos1').value='';
+}
+function closeReceipt(){document.getElementById('receipt-area').innerHTML='';}
+function deletePrescription(id){
+if(!confirm('Delete prescription '+id+'?')) return;
+tokens=tokens.filter(t=>t.id!==id);
+logs=logs.filter(l=>l.token!==id);
+localStorage.setItem('gc_tokens',JSON.stringify(tokens));
+localStorage.setItem('gc_logs',JSON.stringify(logs));
+closeReceipt();renderQueue();renderLogBook();
+alert('Deleted: '+id);
+}
+function deleteLog(token){
+if(!confirm('Delete log '+token+'?')) return;
+tokens=tokens.filter(t=>t.id!==token);
+logs=logs.filter(l=>l.token!==token);
+localStorage.setItem('gc_tokens',JSON.stringify(tokens));
+localStorage.setItem('gc_logs',JSON.stringify(logs));
+renderQueue();renderLogBook();
+}
+function renderLogBook(){
+const body=document.getElementById('log-body');
+document.getElementById('log-total').textContent=logs.length;
+document.getElementById('log-pres').textContent=logs.filter(l=>l.status==='Prescribed').length;
+document.getElementById('log-pending').textContent=logs.filter(l=>l.status==='Pending').length;
+if(logs.length===0){body.innerHTML='<tr><td colspan=7>No logs</td></tr>';return;}
+let h='';
+logs.slice().reverse().forEach(l=>{
+h+='<tr><td><b>'+l.token+'</b></td><td>'+l.name+'</td><td>'+l.village+'</td><td>'+l.diagnosis+'</td><td>'+l.medicine+'</td><td><small>'+(l.time||'')+'</small><br><span class="badge '+(l.status==='Prescribed'?'badge-green':'badge-orange')+'">'+l.status+'</span></td><td><button style="background:#dc2626;color:white;border:none;padding:4px 8px;border-radius:6px;" onclick="deleteLog(\''+l.token+'\')">Delete</button></td></tr>';
+});
+body.innerHTML=h;
+}
+function clearLogBook(){
+if(!confirm('Clear all logs?')) return;
+tokens=[];logs=[];localStorage.setItem('gc_tokens','[]');localStorage.setItem('gc_logs','[]');
+renderQueue();renderLogBook();renderAsha();
+}
+renderQueue();renderAsha();renderLogBook();
+</script>
+</body>
+</html>
