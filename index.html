@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramCareAI - Final V3 Fixed</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:10px}
+.container{max-width:1100px;margin:auto;background:white;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.header{background:#1a237e;color:white;padding:18px;text-align:center}
+.tabs{display:flex;background:#f5f5f5;overflow-x:auto}
+.tab{flex:1;padding:14px 6px;text-align:center;cursor:pointer;font-weight:600;font-size:12px;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{background:white;border-bottom-color:#667eea;color:#667eea}
+.content{padding:15px}
+.card{background:#f8f9ff;border:2px solid #e8eaff;border-radius:12px;padding:15px;margin-bottom:12px}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:bold;color:white;margin:2px}
+.badge-general{background:#4caf50}.badge-derma{background:#ff9800}.badge-cardio{background:#f44336}.badge-neuro{background:#9c27b0}.badge-dental{background:#00bcd4}
+.token{font-size:28px;font-weight:bold;color:#1a237e}
+.btn{background:#667eea;color:white;border:none;padding:12px;border-radius:8px;cursor:pointer;font-weight:700;width:100%;margin-top:10px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.checkbox-card{border:2px solid #ddd;border-radius:10px;padding:10px;text-align:center;cursor:pointer;background:white}
+.checkbox-card.selected{border-color:#667eea;background:#e8eaff;transform:scale(1.02)}
+.checkbox-card input{display:none}
+select,input[type=text]{width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;margin-top:8px;font-size:14px}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;table-layout:fixed}
+th,td{padding:10px 6px;border-bottom:1px solid #eee;text-align:left;word-wrap:break-word}
+th{background:#f5f5f5;font-size:12px}
+.log-entry{background:white;border-left:4px solid #4caf50;padding:10px;margin:6px 0;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>🏥 GramCareAI - V3 Final Fixed</h1><p>Auto Doctor Assign | Queue Fix | Auto Log Save | SIH 2025</p></div>
+<div class="tabs">
+<div class="tab active" onclick="showTab('patient',this)">👩 Patient & Symptoms</div>
+<div class="tab" onclick="showTab('doctors',this)">👨‍⚕️ Doctors (6)</div>
+<div class="tab" onclick="showTab('queue',this)">📋 Queue</div>
+<div class="tab" onclick="showTab('log',this)">📒 Log Book</div>
+</div>
+<div class="content">
+<div id="patient" class="tab-content">
+<div class="card">
+<h3>🧑‍🦱 New Patient - Select Symptoms</h3>
+<input type="text" id="pname" value="Archana"><input type="text" id="village" value="Bapatla">
+<p style="margin-top:12px;font-weight:bold;color:#1a237e">✅ Click Boxes:</p>
+<div class="grid">
+<label class="checkbox-card" onclick="toggleCheck(this,'Viral Fever')"><input type="checkbox" value="Viral Fever"><div>🤒</div><b>Viral Fever</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Fever')"><input type="checkbox" value="Fever"><div>🌡️</div><b>Fever</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Cough')"><input type="checkbox" value="Cough"><div>😷</div><b>Cough</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Back Pain')"><input type="checkbox" value="Back Pain"><div>🧍</div><b>Back Pain</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Skin Rash')"><input type="checkbox" value="Skin Rash"><div>🧴</div><b>Skin Rash</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Chest Pain')"><input type="checkbox" value="Chest Pain"><div>❤️</div><b>Chest Pain</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Headache')"><input type="checkbox" value="Headache"><div>🧠</div><b>Headache</b></label>
+<label class="checkbox-card" onclick="toggleCheck(this,'Tooth Pain')"><input type="checkbox" value="Tooth Pain"><div>🦷</div><b>Tooth Pain</b></label>
+</div>
+<p style="margin-top:15px;font-weight:bold;color:#1a237e">✅ Dropdown:</p>
+<select id="customSymptom" onchange="onDropdownChange(this.value)">
+<option value="">-- Select Symptom Combo --</option>
+<option value="Viral Fever + Cough + Cold">Viral Fever + Cough + Cold → General Physician</option>
+<option value="Fever + Body Pains">Fever + Body Pains → General</option>
+<option value="Skin Allergy + Rashes">Skin Allergy + Rashes → Skin Care</option>
+<option value="High BP + Chest Pain">High BP + Chest Pain → Cardiologist</option>
+<option value="Severe Headache + Dizziness">Severe Headache + Dizziness → Neurologist</option>
+<option value="Tooth Decay + Gum Pain">Tooth Decay + Gum Pain → Dentist</option>
+<option value="Child Fever + Cold">Child Fever + Cold → Pediatrician</option>
+</select>
+<div id="autoDoctorPreview" style="display:none;margin-top:10px;padding:10px;background:#e3f2fd;border-radius:8px"><b>🎯 Auto Assigned Doctor: </b><span id="previewDoctor"></span></div>
+<button class="btn" onclick="generateToken()">🎫 Generate Token & Go To Doctor →</button>
+<div id="tokenResult" style="display:none;margin-top:15px;background:#e8f5e9;padding:15px;border-radius:10px;border:2px solid #4caf50">
+<div class="token" id="tokNum">TKN-235</div><p id="tokInfo"></p><p id="assignedDoc"></p><span class="badge badge-general" id="docBadge">General</span>
+</div>
+</div>
+</div>
+<div id="doctors" class="tab-content" style="display:none"><div class="card"><h3>👨‍⚕️ 6 Specialists</h3>
+<div style="display:flex;gap:10px;background:white;border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px"><div style="width:45px;height:45px;background:#4caf50;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%">GP</div><div style="flex:1"><b>Dr. Ravi - General</b><br><small>Viral Fever, Fever, Cough</small></div><span class="badge badge-general">Online</span></div>
+<div style="display:flex;gap:10px;background:white;border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px"><div style="width:45px;height:45px;background:#ff9800;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%">SC</div><div style="flex:1"><b>Dr. Priya - Skin Care</b><br><small>Skin Rash, Allergy</small></div><span class="badge badge-derma">Online</span></div>
+<div style="display:flex;gap:10px;background:white;border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px"><div style="width:45px;height:45px;background:#f44336;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%">CD</div><div style="flex:1"><b>Dr. Suresh - Cardiologist</b><br><small>Chest Pain, BP</small></div><span class="badge badge-cardio">Online</span></div>
+<div style="display:flex;gap:10px;background:white;border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px"><div style="width:45px;height:45px;background:#9c27b0;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%">NR</div><div style="flex:1"><b>Dr. Anjali - Neurologist</b><br><small>Headache, Back Pain</small></div><span class="badge badge-neuro">On Call</span></div>
+<div style="display:flex;gap:10px;background:white;border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px"><div style="width:45px;height:45px;background:#00bcd4;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%">DE</div><div style="flex:1"><b>Dr. Karthik - Dentist</b><br><small>Tooth Pain</small></div><span class="badge badge-dental">Online</span></div>
+</div></div>
+<div id="queue" class="tab-content" style="display:none"><div class="card"><h3>📋 Token Queue - Fixed</h3><div style="overflow-x:auto"><table><thead><tr><th style="width:18%">Token</th><th style="width:20%">Patient</th><th style="width:24%">Symptom</th><th style="width:18%">Doctor</th><th style="width:20%">Status</th></tr></thead><tbody id="queueBody"><tr><td><b>TKN-233</b></td><td>Archana</td><td>Viral Fever</td><td>General</td><td><span style="color:green">Prescribed ✓</span></td></tr><tr><td><b>TKN-234</b></td><td>Ramesh</td><td>Back Pain</td><td>Neurologist</td><td><span style="color:orange">Waiting</span><br><button class="btn" style="padding:5px;font-size:11px" onclick="prescribeNow('TKN-234','Ramesh','Back Pain','Neurologist','Dr. Anjali Rao')">👨‍⚕️ Check</button></td></tr></tbody></table></div></div></div>
+<div id="log" class="tab-content" style="display:none"><div class="card"><h3>📒 Log Book - Auto Save</h3><div id="logContainer"><div class="log-entry"><b>TKN-233 | Archana | Viral Fever | General</b><br>💊 Paracetamol 500mg | 🕐 05-09-2026 | 👨‍⚕️ Dr. Ravi</div></div><div style="margin-top:15px;display:flex;gap:10px"><div style="flex:1;background:#e8f5e9;padding:10px;border-radius:8px;text-align:center"><b id="totalCount">2</b><br>Total</div><div style="flex:1;background:#fff3e0;padding:10px;border-radius:8px;text-align:center"><b id="prescribedCount">1</b><br>Prescribed</div><div style="flex:1;background:#ffebee;padding:10px;border-radius:8px;text-align:center"><b id="pendingCount">1</b><br>Pending</div></div></div></div>
+</div>
+</div>
+<script>
+let tokCounter=235;let selectedSymptoms=[];let currentDoctorInfo={doctor:'General Physician',short:'General',badge:'badge-general'};
+function showTab(id,el){document.querySelectorAll('.tab-content').forEach(e=>e.style.display='none');document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById(id).style.display='block';if(el)el.classList.add('active');else event.target.classList.add('active');}
+function getDoctorForSymptom(s){s=s.toLowerCase();if(s.includes('skin')||s.includes('rash')||s.includes('allergy'))return{doctor:'Dr. Priya Sharma - Skin Care',short:'Skin Care',badge:'badge-derma'};if(s.includes('chest')||s.includes('bp'))return{doctor:'Dr. Suresh Reddy - Cardiologist',short:'Cardiologist',badge:'badge-cardio'};if(s.includes('headache')||s.includes('back pain')||s.includes('dizziness'))return{doctor:'Dr. Anjali Rao - Neurologist',short:'Neurologist',badge:'badge-neuro'};if(s.includes('tooth')||s.includes('gum'))return{doctor:'Dr. Karthik - Dentist',short:'Dentist',badge:'badge-dental'};return{doctor:'Dr. Ravi Kumar - General Physician',short:'General Physician',badge:'badge-general'};}
+function toggleCheck(el,symptom){el.classList.toggle('selected');let cb=el.querySelector('input');cb.checked=el.classList.contains('selected');if(cb.checked){if(!selectedSymptoms.includes(symptom))selectedSymptoms.push(symptom);}else{selectedSymptoms=selectedSymptoms.filter(x=>x!==symptom);}document.getElementById('customSymptom').value='';if(selectedSymptoms.length>0){currentDoctorInfo=getDoctorForSymptom(selectedSymptoms.join(', '));document.getElementById('previewDoctor').innerText=currentDoctorInfo.doctor;document.getElementById('autoDoctorPreview').style.display='block';}else{document.getElementById('autoDoctorPreview').style.display='none';}}
+function onDropdownChange(val){if(!val)return;document.querySelectorAll('.checkbox-card').forEach(e=>e.classList.remove('selected'));document.querySelectorAll('.checkbox-card input').forEach(e=>e.checked=false);selectedSymptoms=[val];currentDoctorInfo=getDoctorForSymptom(val);document.getElementById('previewDoctor').innerText=currentDoctorInfo.doctor;document.getElementById('autoDoctorPreview').style.display='block';}
+function generateToken(){let name=document.getElementById('pname').value||'Archana';let village=document.getElementById('village').value||'Bapatla';let dropdownVal=document.getElementById('customSymptom').value;let symptoms='';if(dropdownVal)symptoms=dropdownVal;else if(selectedSymptoms.length>0)symptoms=selectedSymptoms.join(', ');else{alert('⚠️ Please select symptom!');return;}currentDoctorInfo=getDoctorForSymptom(symptoms);tokCounter++;document.getElementById('tokNum').innerText='TKN-'+tokCounter;document.getElementById('tokInfo').innerHTML='<b>Patient:</b> '+name+' ('+village+') | <b>Symptoms:</b> '+symptoms;document.getElementById('assignedDoc').innerText='🎯 Assigned: '+currentDoctorInfo.doctor;document.getElementById('docBadge').innerText=currentDoctorInfo.short;document.getElementById('docBadge').className='badge '+currentDoctorInfo.badge;document.getElementById('tokenResult').style.display='block';let qb=document.getElementById('queueBody');let newRow=document.createElement('tr');newRow.id='row-'+tokCounter;newRow.style.background='#e3f2fd';newRow.innerHTML='<td><b>TKN-'+tokCounter+'</b></td><td>'+name+'</td><td>'+symptoms+'</td><td>'+currentDoctorInfo.short+'</td><td><span style="color:blue;font-weight:bold">New → '+currentDoctorInfo.short+'</span><br><button class="btn" style="padding:6px;font-size:11px;margin-top:4px" onclick="prescribeNow(\'TKN-'+tokCounter+'\',\''+name+'\',\''+symptoms+'\',\''+currentDoctorInfo.short+'\',\''+currentDoctorInfo.doctor+'\')">👨‍⚕️ Doctor Check</button></td>';qb.appendChild(newRow);setTimeout(()=>{showTab('queue',document.querySelectorAll('.tab')[2]);newRow.scrollIntoView({behavior:'smooth'});setTimeout(()=>{prescribeNow('TKN-'+tokCounter,name,symptoms,currentDoctorInfo.short,currentDoctorInfo.doctor);},1000);},600);}
+function prescribeNow(token,patient,symptom,docShort,docFull){let medicine=prompt('👨‍⚕️ '+docFull+' - Patient: '+patient+'\\nSymptom: '+symptom+'\\n\\n💊 Medicine Prescribe Chey:','Paracetamol 500mg - 3 days, Rest, ORS');if(!medicine)return;let num=token.split('-')[1];let row=document.getElementById('row-'+num);if(row){row.style.background='#e8f5e9';row.innerHTML='<td><b>'+token+'</b></td><td>'+patient+'</td><td>'+symptom+'</td><td>'+docShort+'</td><td><span style="color:green;font-weight:bold">Prescribed ✓</span><br><small>'+medicine+'</small></td>';}let logDiv=document.createElement('div');logDiv.className='log-entry';let time=new Date().toLocaleString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});logDiv.innerHTML='<b>'+token+' | '+patient+' | '+symptom+' | '+docShort+'</b><br>💊 '+medicine+' | 🕐 '+time+' | 👨‍⚕️ '+docFull;document.getElementById('logContainer').prepend(logDiv);let total=document.querySelectorAll('#queueBody tr').length;document.getElementById('totalCount').innerText=total;document.getElementById('prescribedCount').innerText=document.querySelectorAll('#logContainer.log-entry').length;document.getElementById('pendingCount').innerText=Math.max(0,total-document.querySelectorAll('#logContainer.log-entry').length);alert('✅ '+token+' Prescribed & Auto Saved in Log Book!');}
+</script>
+</body>
+</html>
