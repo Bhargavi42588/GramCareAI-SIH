@@ -99,9 +99,6 @@ th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
 </div>
 </div>
 <script>
-let tokCounter=235;
-function showTab(id){document.querySelectorAll('.tab-content').forEach(e=>e.style.display='none');document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById(id).style.display='block';event.target.classList.add('active');}
-function toggleCheck(el){el.classList.toggle('selected');el.querySelector('input').checked=el.classList.contains('selected');}
 function generateToken(){
  const name=document.getElementById('pname').value||'Archana';
  const checks=[...document.querySelectorAll('.checkbox-card.selected')].map(c=>c.querySelector('input').value);
@@ -112,7 +109,49 @@ function generateToken(){
  else if(symptoms.includes('Chest')||symptoms.includes('BP')){doctor='Dr. Suresh Reddy - Cardiologist';badge='badge-cardio';docShort='Cardiologist';}
  else if(symptoms.includes('Headache')||symptoms.includes('Back Pain')){doctor='Dr. Anjali Rao - Neurologist';badge='badge-neuro';docShort='Neurologist';}
  else if(symptoms.includes('Tooth')){doctor='Dr. Karthik - Dentist';badge='badge-dental';docShort='Dentist';}
- tokCounter++;document.getElementById('tokNum').innerText='TKN-'+tokCounter;document.getElementById('tokInfo').innerHTML='<b>Patient:</b> '+name+' | <b>Symptoms:</b> '+symptoms;document.getElementById('assignedDoc').innerText='Assigned: '+doctor;document.getElementById('docBadge').innerText=docShort;document.getElementById('docBadge').className='badge '+badge;document.getElementById('tokenResult').style.display='block';document.getElementById('newTok').innerText='TKN-'+tokCounter;document.getElementById('newPat').innerText=name;document.getElementById('newSym').innerText=symptoms;document.getElementById('newDoc').innerText=docShort;document.getElementById('newRow').style.display='table-row';alert('Token TKN-'+tokCounter+' Generated!\nSymptom: '+symptoms+'\nAssigned to: '+doctor);
+
+ tokCounter++;
+ // Token Card Show
+ document.getElementById('tokNum').innerText='TKN-'+tokCounter;
+ document.getElementById('tokInfo').innerHTML='<b>Patient:</b> '+name+' | <b>Symptoms:</b> '+symptoms;
+ document.getElementById('assignedDoc').innerText='Assigned: '+doctor;
+ document.getElementById('docBadge').innerText=docShort;
+ document.getElementById('docBadge').className='badge '+badge;
+ document.getElementById('tokenResult').style.display='block';
+
+ // Queue lo add
+ document.getElementById('newTok').innerText='TKN-'+tokCounter;
+ document.getElementById('newPat').innerText=name;
+ document.getElementById('newSym').innerText=symptoms;
+ document.getElementById('newDoc').innerText=docShort;
+ document.getElementById('newRow').style.display='table-row';
+
+ // === NEW AUTO FLOW - DIRECT DOCTOR KI ===
+ setTimeout(()=>{
+   alert('✅ Token TKN-'+tokCounter+' Generated!\n\nSymptom: '+symptoms+'\nDoctor: '+doctor+'\n\n👉 Now Going to Doctor Queue... Doctor will check!');
+
+   // Auto switch to Queue Tab
+   document.querySelectorAll('.tab-content').forEach(e=>e.style.display='none');
+   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+   document.getElementById('queue').style.display='block';
+   document.querySelectorAll('.tab')[2].classList.add('active'); // Queue tab active
+
+   // Highlight new token row
+   document.getElementById('newRow').style.background='#e8f5e9';
+   document.getElementById('newRow').style.border='2px solid #4caf50';
+
+   // Auto show doctor check button after 1 sec
+   setTimeout(()=>{
+     if(confirm('👨‍⚕️ Doctor '+doctor+' - Patient '+name+' ('+symptoms+') ni check cheyala?\n\nClick OK to Prescribe Medicine')){
+       let medicine = prompt('💊 Medicine Prescribe Chey for '+symptoms+':','Paracetamol 500mg, Rest, ORS');
+       if(medicine){
+         alert('✅ Prescribed for TKN-'+tokCounter+':\n'+medicine+'\n\n✓ Log Book lo save ayyindi!');
+         document.getElementById('newRow').innerHTML='<td><b>TKN-'+tokCounter+'</b></td><td>'+name+'</td><td>'+symptoms+'</td><td>'+docShort+'</td><td style="color:green">Prescribed ✓<br><small>'+medicine+'</small></td>';
+       }
+     }
+   },800);
+
+ },500);
 }
 </script>
 </body>
