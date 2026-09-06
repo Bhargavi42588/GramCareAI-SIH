@@ -1,55 +1,188 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>GramCareAI - PS 26133 - Main Project File</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e,#283593);min-height:100vh;padding:10px}.container{max-width:900px;margin:auto;background:white;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.3)}.header{background:#1a237e;color:white;padding:20px;text-align:center}.header h1{font-size:26px}.header p{font-size:13px;margin-top:6px;opacity:0.9}.header small{font-size:11px;opacity:0.7;display:block;margin-top:8px;line-height:1.4}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;padding:16px}.app-card{border:2px solid #e0e0e0;border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:0.3s;background:white}.app-card:hover{transform:translateY(-5px);border-color:#667eea;box-shadow:0 5px 20px rgba(102,126,234,0.3)}.app-card .icon{font-size:40px;margin-bottom:8px}.app-card h3{font-size:15px;color:#1a237e}.app-card p{font-size:11px;color:#666;margin-top:4px}.app-card .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:9px;color:white;margin-top:8px;font-weight:bold}.badge-live{background:#4caf50}.badge-asha{background:#ff9800}.badge-doctor{background:#4caf50}.badge-log{background:#9c27b0}.badge-patient{background:#667eea}.btn-main{background:#667eea;color:white;border:none;padding:14px 20px;border-radius:10px;font-weight:700;width:100%;margin-top:10px;cursor:pointer;font-size:14px}.status-bar{display:flex;gap:6px;padding:10px 16px;background:#f5f5f5;flex-wrap:wrap}.status-item{flex:1;background:white;padding:8px;border-radius:8px;text-align:center;border:1px solid #eee;min-width:80px}.status-item b{font-size:18px;display:block;color:#1a237e}.status-item small{font-size:10px;color:#666}</style>
-</head><body>
-<div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramCareAI - PS 26133 - All in One</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:linear-gradient(135deg,#6e8efb,#a777e3);min-height:100vh;padding:10px}
+.header{background:#1e2a8a;color:white;padding:20px;text-align:center;border-radius:15px;margin-bottom:10px}
+.header h1{font-size:28px}.header p{font-size:13px;margin-top:5px;opacity:0.9}
+.tabs{display:flex;gap:5px;overflow-x:auto;background:white;padding:8px;border-radius:10px;margin-bottom:10px;white-space:nowrap}
+.tab{padding:8px 12px;border-radius:20px;border:1px solid #ddd;background:#f5f5f5;cursor:pointer;font-weight:bold;font-size:13px}
+.tab.active{background:#1e2a8a;color:white}
+.card{background:white;border-radius:15px;padding:15px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.box{border:1px solid #ccc;padding:12px;text-align:center;border-radius:10px;cursor:pointer;background:#fafafa}
+.box.selected{background:#d1e7dd;border-color:#198754;font-weight:bold}
+.btn{width:100%;padding:13px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:15px;margin-top:8px}
+.btn-green{background:#198754;color:white}
+.btn-orange{background:#ff9800;color:white}
+.table{width:100%;font-size:13px;border-collapse:collapse}
+.table th{padding:8px;background:#f1f1f1;text-align:left}
+.table td{padding:8px;border-bottom:1px solid #eee}
+.badge{padding:3px 8px;border-radius:12px;font-size:11px}
+.badge-wait{background:#fff3cd;color:#856404}
+.badge-pres{background:#d1e7dd;color:#0f5132}
+.doc-card{border:1px solid #ddd;padding:10px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.online{background:#198754;color:white;padding:5px 12px;border-radius:20px;font-size:12px}
+.stats{display:flex;gap:8px;margin:10px 0}
+.stat{flex:1;padding:10px;text-align:center;border-radius:10px;font-weight:bold}
+</style>
+</head>
+<body>
+
 <div class="header">
 <h1>🏥 GramCareAI</h1>
-<p>An Integrated Care-Access and Quality Support Solution</p>
-<p style="font-size:12px;margin-top:6px">Accessibility and Quality of Public Healthcare Services, Particularly in Rural and Underserved Areas</p>
-<small>PS ID: 26133 | Organization: Govt. of Maharashtra | Dept: Maharashtra State Innovation Society | Theme: MedTech / BioTech / HealthTech | Category: Software<br>Expected Outcome: Reduced Travel & Waiting Time, Earlier Consultation, Improved Referral & Follow-up for Maternal, Child & Chronic Care | Strengthening — Not Replacing — Public Health System</small>
+<p>An Integrated Care-Access and Quality Support Solution<br>Accessibility and Quality of Public Healthcare Services, Particularly in Rural and Underserved Areas</p>
+<p style="margin-top:8px;font-size:12px">PS ID: 26133 | Govt. of Maharashtra | MedTech | Strengthening - Not Replacing - Public Health System | Reduced Travel, Earlier Consultation, Better Follow-up</p>
 </div>
 
-<div class="status-bar">
-<div class="status-item"><b id="totalCount">0</b><small>Total Logs</small></div>
-<div class="status-item"><b id="pendingCount">0</b><small>Pending Queue</small></div>
-<div class="status-item"><b id="presCount">0</b><small>Prescribed</small></div>
-<div class="status-item"><b id="onlineCount">6</b><small>Doctors Online</small></div>
+<div class="tabs">
+<button class="tab active" onclick="showTab('patient')">👩 Patient</button>
+<button class="tab" onclick="showTab('queue')">📋 Queue <span id="qcount" style="background:orange;color:white;padding:2px 6px;border-radius:10px;margin-left:4px">0 Pending</span></button>
+<button class="tab" onclick="showTab('doctor')">💊 Doctor Rx</button>
+<button class="tab" onclick="showTab('log')">📒 Log Book</button>
+<button class="tab" onclick="showTab('doctors')">🧑‍⚕️ Doctors Online</button>
 </div>
 
-<div style="padding:12px 16px 0 16px"><h3 style="font-size:14px">📁 Oka Project File - 5 Apps Connected - Click to Open</h3><p style="font-size:11px;color:#666;margin-top:4px">Nee photo lo unna GramCareAI app folder loni 5 files ikkada nundi open avtayi - LocalStorage tho data sharing</p></div>
-
-<div class="grid">
-<div class="app-card" onclick="location.href='patient-app.html'">
-<div class="icon">👩‍⚕️</div><h3>1. Patient App</h3><p>Patient Name, Village, Click Boxes - Symptom Select - Token Generate</p><span class="badge badge-patient">🟢 LIVE - Start Here</span>
-</div>
-<div class="app-card" onclick="location.href='asha-app.html'">
-<div class="icon">📋</div><h3>2. ASHA Worker App</h3><p>Queue Management - Only Pending / Waiting - Auto moves to Log Book after prescribe</p><span class="badge badge-asha">⏳ Queue - Pending Only</span>
-</div>
-<div class="app-card" onclick="location.href='doctor-dashboard.html'">
-<div class="icon">👨‍⚕️</div><h3>3. Doctor Dashboard</h3><p>Doctor Prescription - Separate (Veru Ga) - Doctor Medicine Rayali</p><span class="badge badge-doctor">💊 Doctor Rx - Veru Ga</span>
-</div>
-<div class="app-card" onclick="location.href='medicine-check.html'">
-<div class="icon">📒</div><h3>4. Medicine Check & Log Book</h3><p>Auto Save Log Book - Filters: Total / Prescribed / Pending - Working</p><span class="badge badge-log">📒 Filters Working</span>
-</div>
-<div class="app-card" onclick="openAllInOne()">
-<div class="icon">🏥</div><h3>5. All-in-One App (V8)</h3><p>Single File lo anni Tabs - Patient + Queue + Doctor Rx + Log Book + Doctors Online</p><span class="badge badge-live">🚀 V8 FINAL - Single File</span>
-</div>
+<!-- PATIENT -->
+<div id="patient" class="card">
+<h3>1️⃣ Patient - Symptom Select</h3>
+<input id="pname" class="input" placeholder="Patient Name - Eg: Archana">
+<input id="village" class="input" placeholder="Village - Eg: Bapatla">
+<label><b>Click Boxes:</b></label>
+<div class="grid" id="symptomGrid"></div>
+<select id="combo" class="input"><option>-- Select Combo --</option><option>Viral Fever + Cough</option><option>Fever + Headache</option><option>Back Pain + Headache</option></select>
+<button class="btn btn-green" onclick="generateToken()">🎫 Token Generate → Queue Pending ki</button>
+<div id="tokenResult" style="margin-top:10px;font-weight:bold;color:green"></div>
 </div>
 
-<div style="padding:0 16px 16px 16px">
-<button class="btn-main" onclick="location.href='patient-app.html'">🚀 Start Project - Go to Patient App →</button>
-<div style="margin-top:10px;display:flex;gap:8px">
-<button style="flex:1;padding:10px;border:2px solid #667eea;background:white;color:#667eea;border-radius:8px;font-weight:700;cursor:pointer;font-size:11px" onclick="location.href='https://github.com/Bhargavi42588/GramCareAI-SIH'">📂 GitHub Repo</button>
-<button style="flex:1;padding:10px;border:2px solid #4caf50;background:white;color:#4caf50;border-radius:8px;font-weight:700;cursor:pointer;font-size:11px" onclick="clearData()">🗑️ Clear Demo Data</button>
+<!-- QUEUE -->
+<div id="queue" class="card" style="display:none">
+<h3>📋 Queue - Only Pending / Waiting</h3>
+<p style="font-size:12px;color:gray">Prescribed ayithe auto Log Book ki vellipoddi</p>
+<table class="table"><thead><tr><th>Token</th><th>Patient</th><th>Symptom</th><th>Doctor</th><th>Status</th></tr></thead><tbody id="queueBody"></tbody></table>
+<button class="btn btn-orange" onclick="showTab('doctor')">👨‍⚕️ Go to Doctor Rx →</button>
 </div>
-<p style="text-align:center;font-size:10px;color:#999;margin-top:10px">SIH 2025 - Rural Healthcare App for Gadchiroli | GramCareAI Team | LocalStorage Based - Offline First - Low Connectivity Support</p>
+
+<!-- DOCTOR -->
+<div id="doctor" class="card" style="display:none">
+<h3>💊 Doctor Prescription - Separate (Veru Ga)</h3>
+<div id="doctorCase" style="border:2px solid orange;padding:10px;border-radius:10px;background:#fff8e1"></div>
 </div>
+
+<!-- LOG BOOK -->
+<div id="log" class="card" style="display:none">
+<h3>📒 Log Book - Auto Save</h3>
+<div class="stats">
+<div class="stat" style="background:#e3f2fd"><span id="totalCount">0</span><br>Total</div>
+<div class="stat" style="background:#e8f5e9"><span id="presCount">0</span><br>Prescribed</div>
+<div class="stat" style="background:#ffebee"><span id="pendCount">0</span><br>Pending</div>
+</div>
+<div id="logList"></div>
+</div>
+
+<!-- DOCTORS -->
+<div id="doctors" class="card" style="display:none">
+<h3>🧑‍⚕️ Doctors - All Online ✅</h3>
+<div id="doctorsList"></div>
 </div>
 
 <script>
-function updateCounts(){let logs=JSON.parse(localStorage.getItem('gramcare_logs')||'[]');document.getElementById('totalCount').innerText=logs.length;document.getElementById('pendingCount').innerText=logs.filter(l=>l.status==='pending').length;document.getElementById('presCount').innerText=logs.filter(l=>l.status==='prescribed').length;}
-function clearData(){if(confirm('Demo data clear cheyala?')){localStorage.removeItem('gramcare_logs');localStorage.removeItem('tokCounter');alert('Cleared!');updateCounts();}}
-function openAllInOne(){let allInOneCode=localStorage.getItem('gramcare_v8_code');if(allInOneCode){let w=window.open();w.document.write(allInOneCode);}else{alert('V8 All-in-One file kavala ante nenu ichina V8 index.html code ni separate file ga save chesi all-in-one.html ani petti open chey');location.href='patient-app.html';}}
-updateCounts();setInterval(updateCounts,2000);
+let selectedSymptom = "";
+let logs = JSON.parse(localStorage.getItem('gramcare_logs') || '[]');
+const symptoms = [
+{name:"Viral Fever",icon:"🤧"}, {name:"Fever",icon:"🌡️"}, {name:"Cough",icon:"😷"},
+{name:"Back Pain",icon:"🧍"}, {name:"Skin Rash",icon:"🧴"}, {name:"Chest Pain",icon:"❤️"},
+{name:"Headache",icon:"🧠"}, {name:"Tooth Pain",icon:"🦷"}
+];
+const doctors = [
+{name:"Dr. Ravi Kumar",spec:"General Physician",exp:"Viral Fever, Fever, Cough",loc:"Bapatla PHC"},
+{name:"Dr. Priya Sharma",spec:"Dermatologist",exp:"Skin Rash, Allergy",loc:"Guntur"},
+{name:"Dr. Suresh Reddy",spec:"Cardiologist",exp:"Chest Pain, BP",loc:"Vijayawada"},
+{name:"Dr. Anjali Rao",spec:"Neurologist",exp:"Back Pain, Headache",loc:"Hyderabad"},
+{name:"Dr. Karthik",spec:"Dentist",exp:"Tooth Pain",loc:"Bapatla Dental"},
+{name:"Dr. Lakshmi",spec:"Pediatrician",exp:"Child Fever",loc:"Bapatla"}
+];
+
+function renderSymptoms(){
+  document.getElementById('symptomGrid').innerHTML = symptoms.map(s=>`<div class="box" onclick="selectSymptom('${s.name}',this)">${s.icon}<br>${s.name}</div>`).join('');
+}
+function selectSymptom(name,el){
+  selectedSymptom=name;
+  document.querySelectorAll('.box').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function showTab(id){
+  ['patient','queue','doctor','log','doctors'].forEach(t=>{document.getElementById(t).style.display=t===id?'block':'none'});
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active'); if(['patient','queue','doctor','log','doctors'][i]===id) t.classList.add('active')});
+  if(id==='queue') renderQueue();
+  if(id==='log') renderLog();
+  if(id==='doctors') renderDoctors();
+  if(id==='doctor') renderDoctorCase();
+}
+function generateToken(){
+  const name=document.getElementById('pname').value||'Archana';
+  const vill=document.getElementById('village').value||'Bapatla';
+  if(!selectedSymptom){alert('Symptom select chey!');return}
+  const token='TKN-'+(230+logs.length+1);
+  const doctor = symptoms.findIndex(s=>s.name===selectedSymptom)<=2? 'General' : selectedSymptom.includes('Skin')?'Derma':selectedSymptom.includes('Chest')?'Cardio':selectedSymptom.includes('Back')||selectedSymptom.includes('Headache')?'Neuro':selectedSymptom.includes('Tooth')?'Dental':'General';
+  const entry={token,patient:name,village:vill,symptom:selectedSymptom,doctor,status:'Waiting',medicine:'',time:new Date().toLocaleString()};
+  logs.push(entry);
+  localStorage.setItem('gramcare_logs',JSON.stringify(logs));
+  document.getElementById('tokenResult').innerHTML=`✅ ${token} Generated - ${name} - ${selectedSymptom} - Queue Pending ki vellindi!`;
+  updateCounts();
+  showTab('queue');
+}
+function renderQueue(){
+  const pending=logs.filter(l=>l.status==='Waiting');
+  document.getElementById('queueBody').innerHTML=pending.map(l=>`<tr><td><b>${l.token}</b></td><td>${l.patient}</td><td>${l.symptom}</td><td>${l.doctor}</td><td><span class="badge badge-wait">⏳ Waiting</span></td></tr>`).join('') || `<tr><td colspan=5 style="text-align:center;color:gray">No Pending - All Prescribed Log Book ki vellayi</td></tr>`;
+  document.getElementById('qcount').innerText=pending.length+' Pending';
+}
+function renderDoctorCase(){
+  const pending=logs.filter(l=>l.status==='Waiting');
+  if(pending.length===0){document.getElementById('doctorCase').innerHTML='No Pending Queue - Log Book check chey';return}
+  const cur=pending[0];
+  const docName = cur.doctor==='General'?'Dr. Ravi Kumar - General Physician':cur.doctor==='Neuro'?'Dr. Anjali Rao - Neurologist':cur.doctor==='Derma'?'Dr. Priya Sharma - Dermatologist':cur.doctor==='Cardio'?'Dr. Suresh Reddy - Cardiologist':'Dr. Karthik - Dentist';
+  document.getElementById('doctorCase').innerHTML=`
+  <b>${cur.token} | ${cur.patient} | ${cur.symptom}</b><span style="float:right;background:purple;color:white;padding:4px 8px;border-radius:12px">${cur.doctor}</span><br><small>${docName}</small>
+  <div style="background:#fff3e0;padding:10px;margin-top:10px;border-radius:8px">
+  <b>👨‍⚕️ Doctor - Prescription rayali:</b>
+  <input id="medInput" class="input" placeholder="💊 Medicine" style="margin-top:6px">
+  <button class="btn btn-green" onclick="prescribe('${cur.token}')">✅ Prescribe → Move to Log Book</button>
+  </div>`;
+}
+function prescribe(token){
+  const med=document.getElementById('medInput').value||'Paracetamol 500mg';
+  logs=logs.map(l=>l.token===token?{...l,medicine:med,status:'Prescribed',doctorName:'Dr. Ravi'}:l);
+  localStorage.setItem('gramcare_logs',JSON.stringify(logs));
+  updateCounts();
+  showTab('log');
+}
+function renderLog(){
+  updateCounts();
+  document.getElementById('logList').innerHTML=logs.slice().reverse().map(l=>`
+  <div style="border-left:4px solid ${l.status==='Prescribed'?'green':'orange'};padding:8px;margin-bottom:6px;background:#f9f9f9;border-radius:6px">
+  <b>${l.token} | ${l.patient} | ${l.symptom} | ${l.doctor}</b><br>
+  <small>💊 ${l.medicine||'Pending'} | 🕒 ${l.time} | 👨‍⚕️ ${l.doctorName||''} | <b style="color:${l.status==='Prescribed'?'green':'orange'}">${l.status.toUpperCase()}</b></small>
+  </div>`).join('')||'No Logs';
+}
+function renderDoctors(){
+  document.getElementById('doctorsList').innerHTML=doctors.map(d=>`<div class="doc-card"><div><b>${d.name} - ${d.spec}</b><br><small>${d.exp} | ${d.loc}</small></div><div class="online">🟢 Online</div></div>`).join('');
+}
+function updateCounts(){
+  document.getElementById('totalCount').innerText=logs.length;
+  document.getElementById('presCount').innerText=logs.filter(l=>l.status==='Prescribed').length;
+  document.getElementById('pendCount').innerText=logs.filter(l=>l.status==='Waiting').length;
+  const pending=logs.filter(l=>l.status==='Waiting').length;
+  document.getElementById('qcount').innerText=pending+' Pending';
+  if(document.getElementById('totalCount')){ // for header counts in launcher if present
+  }
+}
+renderSymptoms(); renderDoctors(); updateCounts();
 </script>
-</body></html>
+</body>
+</html>
