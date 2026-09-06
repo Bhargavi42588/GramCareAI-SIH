@@ -1,32 +1,289 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>GramCareAI FINAL V4 WORKING</title>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:linear-gradient(135deg,#7a7cf0,#6a5af9);min-height:100vh;padding:8px}.main-header{background:#1a237e;color:#fff;padding:18px;text-align:center;border-radius:20px 20px 0 0}.app-container{background:#fff;border-radius:0 0 20px 20px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25)}.tabs{display:flex;overflow-x:auto;background:#f8f9fa;border-bottom:2px solid #e9ecef}.tab{padding:12px 14px;border:none;background:transparent;cursor:pointer;font-weight:700;font-size:13px;color:#666;border-bottom:3px solid transparent;white-space:nowrap}.tab.active{color:#1a237e;border-bottom-color:#1a237e;background:#fff}.tab-content{padding:16px;display:none}.tab-content.active{display:block}.input{width:100%;padding:13px;border:1.8px solid #e0e0e0;border-radius:10px;margin-bottom:12px;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.sbox{border:2px solid #e0e0e0;padding:16px;text-align:center;border-radius:12px;cursor:pointer;background:#fff;font-weight:700;font-size:13px;user-select:none}.sbox.selected{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;transform:scale(0.97)}.btn{width:100%;padding:14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}.btn-green{background:#2e9d4b;color:#fff}.btn-orange{background:#ff8c00;color:#fff;margin-top:14px}.btn-small{padding:7px 14px;font-size:12px;border-radius:20px;border:1.5px solid #ddd;background:#fff;cursor:pointer;margin-right:6px;font-weight:700}.btn-small.active{background:#1a237e;color:#fff;border-color:#1a237e}.table{width:100%;border-collapse:collapse;font-size:13px}.table th{padding:10px 6px;background:#f8f9fa;text-align:left}.table td{padding:11px 6px;border-bottom:1px solid #f0f0f0}.badge-wait{background:#fff3e0;color:#e65100;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}.card-doc{border:2px solid #ffb74d;border-radius:14px;padding:14px;background:#fffef7}.badge-neuro{background:#9c27b0;color:#fff;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;float:right}.pres-box{background:#fff3e0;padding:14px;border-radius:10px;margin-top:12px}.stats{display:flex;gap:8px;margin:12px 0}.stat{flex:1;padding:12px;text-align:center;border-radius:10px;border:2px solid #e0e0e0;font-weight:800;background:#fff}.log-entry{border-left:4px solid #2e7d32;padding:10px;margin-top:10px;background:#f9fffe;border-radius:0 10px 10px 0}.doc-card{border:1.5px solid #eee;padding:12px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}.online{background:#2e9d4b;color:#fff;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700}</style></head><body>
-<div class="main-header"><h1>🏥 GramCareAI</h1><div style="font-size:13px;margin-top:6px">An Integrated Care-Access and Quality Support Solution</div><div style="font-size:10px;margin-top:8px;opacity:.8">PS ID: 26133 | MedTech | FINAL V4 - All Fixed</div></div>
-<div class="app-container">
-<div class="tabs"><button class="tab active" onclick="openTab('patient')" id="tab-patient">👩‍⚕️ Patient</button><button class="tab" onclick="openTab('queue')" id="tab-queue">📋 Queue <span id="qbadge">0 Pending</span></button><button class="tab" onclick="openTab('doctor')" id="tab-doctor">💊 Doctor Rx</button><button class="tab" onclick="openTab('log')" id="tab-log">📒 Log Book</button><button class="tab" onclick="openTab('doctors')" id="tab-doctors">🧑‍⚕️ Doctors Online</button></div>
-<div id="patient" class="tab-content active"><b>1️⃣ Patient - Click Boxes (Working)</b><input id="pname" class="input" placeholder="Patient Name"><input id="village" class="input" placeholder="Village"><div style="font-weight:700;margin:8px 0">Click Boxes:</div><div class="grid" id="symGrid"></div><div style="font-weight:700;margin:8px 0">Select Combo:</div><select id="comboSelect" class="input"><option value="">-- Select Combo --</option><option>Viral Fever + Cough</option><option>Fever + Headache</option><option>Back Pain + Headache</option><option>Chest Pain + Fever</option><option>Skin Rash + Fever</option><option>Cough + Headache</option><option>Tooth Pain + Fever</option></select><button class="btn btn-green" onclick="genToken()">🎫 Token Generate</button><div id="tokMsg" style="margin-top:12px;font-weight:700;color:#2e7d32"></div></div>
-<div id="queue" class="tab-content"><b>📋 Queue - Only Pending</b><table class="table"><thead><tr><th>Token</th><th>Patient</th><th>Symptom</th><th>Doctor</th><th>Status</th></tr></thead><tbody id="qbody"></tbody></table><button class="btn btn-orange" onclick="openTab('doctor')">🧑‍⚕️ Go to Doctor Rx →</button></div>
-<div id="doctor" class="tab-content"><b>💊 Doctor Prescription</b><div id="docCase"></div></div>
-<div id="log" class="tab-content"><b>📒 Log Book - Buttons Working</b><div class="stats"><div class="stat"><div id="totalC">1</div>Total</div><div class="stat" style="background:#e8f5e9"><div id="presC">1</div>Prescribed</div><div class="stat" style="background:#ffebee"><div id="pendC">0</div>Pending</div></div><div style="margin:12px 0"><button class="btn-small active" id="filterAll" onclick="filterLog('All')">All</button><button class="btn-small" id="filterPres" onclick="filterLog('Prescribed')">Prescribed</button><button class="btn-small" id="filterPend" onclick="filterLog('Waiting')">Pending</button><button class="btn-small" onclick="clearLogs()" style="background:#ff4444;color:#fff;float:right">Clear All</button></div><div id="logList"></div></div>
-<div id="doctors" class="tab-content"><b>🧑‍⚕️ Doctors Online</b><div id="docsList"></div></div>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GramCareAI - FINAL HTML V6</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:linear-gradient(135deg,#7a7cf0,#6a5af9);min-height:100vh;padding:8px}
+.main-header{background:#1a237e;color:white;padding:18px;text-align:center;border-radius:20px 20px 0 0}
+.app-container{background:white;border-radius:0 0 20px 20px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.tabs{display:flex;overflow-x:auto;background:#f8f9fa;border-bottom:2px solid #e9ecef}
+.tab{padding:12px 14px;border:none;background:transparent;cursor:pointer;font-weight:700;font-size:13px;color:#666;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{color:#1a237e;border-bottom-color:#1a237e;background:white}
+.tab-content{padding:16px;display:none}
+.tab-content.active{display:block}
+.input{width:100%;padding:13px;border:1.8px solid #e0e0e0;border-radius:10px;margin-bottom:12px;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sbox{border:2px solid #e0e0e0;padding:16px;text-align:center;border-radius:12px;cursor:pointer;background:white;font-weight:700;font-size:13px}
+.sbox.selected{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}
+.btn-green{background:#2e9d4b;color:white}
+.btn-orange{background:#ff8c00;color:white;margin-top:14px}
+.btn-small{padding:7px 14px;font-size:12px;border-radius:20px;border:1.5px solid #ddd;background:white;cursor:pointer;margin-right:6px;font-weight:700}
+.btn-small.active{background:#1a237e;color:white;border-color:#1a237e}
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{padding:10px 6px;background:#f8f9fa;text-align:left}
+.table td{padding:11px 6px;border-bottom:1px solid #f0f0f0}
+.badge-wait{background:#fff3e0;color:#e65100;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.card-doc{border:2px solid #ffb74d;border-radius:14px;padding:14px;background:#fffef7}
+.badge-neuro{background:#9c27b0;color:white;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;float:right}
+.pres-box{background:#fff3e0;padding:14px;border-radius:10px;margin-top:12px}
+.stats{display:flex;gap:8px;margin:12px 0}
+.stat{flex:1;padding:12px;text-align:center;border-radius:10px;border:2px solid #e0e0e0;font-weight:800;background:white}
+.log-entry{border-left:4px solid #2e7d32;padding:10px;margin-top:10px;background:#f9fffe;border-radius:0 10px 10px 0}
+.doc-card{border:1.5px solid #eee;padding:12px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.online{background:#2e9d4b;color:white;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="main-header">
+<h1>🏥 GramCareAI</h1>
+<div style="font-size:13px;margin-top:6px">An Integrated Care-Access and Quality Support Solution</div>
+<div style="font-size:10px;margin-top:8px;opacity:.8">PS ID: 26133 | Govt. of Maharashtra | MedTech | FINAL HTML V6 - All Working</div>
 </div>
+<div class="app-container">
+<div class="tabs">
+<button class="tab active" id="tab-patient" onclick="openTab('patient')">👩‍⚕️ Patient</button>
+<button class="tab" id="tab-queue" onclick="openTab('queue')">📋 Queue <span id="qbadge">0 Pending</span></button>
+<button class="tab" id="tab-doctor" onclick="openTab('doctor')">💊 Doctor Rx</button>
+<button class="tab" id="tab-log" onclick="openTab('log')">📒 Log Book</button>
+<button class="tab" id="tab-doctors" onclick="openTab('doctors')">🧑‍⚕️ Doctors Online</button>
+</div>
+
+<div id="patient" class="tab-content active">
+<b>1️⃣ Patient - Symptom Select</b>
+<input id="pname" class="input" value="Archana" placeholder="Patient Name">
+<input id="village" class="input" value="Bapatla" placeholder="Village">
+<div style="font-weight:700;margin:8px 0">Click Boxes:</div>
+<div class="grid" id="symGrid"></div>
+<div style="font-weight:700;margin:8px 0">Select Combo:</div>
+<select id="comboSelect" class="input">
+<option value="">-- Select Combo --</option>
+<option>Viral Fever + Cough</option>
+<option>Fever + Headache</option>
+<option>Back Pain + Headache</option>
+<option>Chest Pain + Fever</option>
+<option>Skin Rash + Fever</option>
+<option>Cough + Headache</option>
+<option>Tooth Pain + Fever</option>
+</select>
+<button class="btn btn-green" onclick="genToken()">🎫 Token Generate → Queue</button>
+<div id="tokMsg" style="margin-top:12px;font-weight:700;color:#2e7d32"></div>
+</div>
+
+<div id="queue" class="tab-content">
+<b>📋 Queue - Only Pending / Waiting</b>
+<table class="table"><thead><tr><th>Token</th><th>Patient</th><th>Symptom</th><th>Doctor</th><th>Status</th></tr></thead><tbody id="qbody"></tbody></table>
+<button class="btn btn-orange" onclick="openTab('doctor')">🧑‍⚕️ Go to Doctor Rx →</button>
+</div>
+
+<div id="doctor" class="tab-content">
+<b>💊 Doctor Prescription</b>
+<div id="docCase"></div>
+</div>
+
+<div id="log" class="tab-content">
+<b>📒 Log Book - Auto Save</b>
+<div class="stats">
+<div class="stat"><div id="totalC">1</div>Total</div>
+<div class="stat" style="background:#e8f5e9"><div id="presC">1</div>Prescribed</div>
+<div class="stat" style="background:#ffebee"><div id="pendC">0</div>Pending</div>
+</div>
+<div style="margin:12px 0">
+<button class="btn-small active" id="filterAll" onclick="filterLog('All')">All</button>
+<button class="btn-small" id="filterPres" onclick="filterLog('Prescribed')">Prescribed</button>
+<button class="btn-small" id="filterPend" onclick="filterLog('Waiting')">Pending</button>
+<button class="btn-small" onclick="clearLogs()" style="background:#ff4444;color:white;float:right">Clear All</button>
+</div>
+<div id="logList"></div>
+</div>
+
+<div id="doctors" class="tab-content">
+<b>🧑‍⚕️ Doctors - All Online ✅</b>
+<div id="docsList"></div>
+</div>
+
+</div>
+
 <script>
-let selSym="Viral Fever";let currentFilter="All";
-let logs=JSON.parse(localStorage.getItem('gram_logs_v4')||'null')||[{token:"TKN-233",patient:"Archana",village:"Bapatla",symptom:"Viral Fever",doctor:"General",status:"Prescribed",medicine:"Paracetamol 500mg",time:"05-09-2026 10:30 AM",docName:"Dr. Ravi"}];
-const syms=[{name:"Viral Fever",icon:"🤧"},{name:"Fever",icon:"🌡️"},{name:"Cough",icon:"😷"},{name:"Back Pain",icon:"🧍"},{name:"Skin Rash",icon:"🧴"},{name:"Chest Pain",icon:"❤️"},{name:"Headache",icon:"🧠"},{name:"Tooth Pain",icon:"🦷"}];
-const docs=[{name:"Dr. Ravi Kumar - General",info:"Viral Fever, Fever, Cough"},{name:"Dr. Priya Sharma - Derma",info:"Skin Rash"},{name:"Dr. Suresh Reddy - Cardio",info:"Chest Pain"},{name:"Dr. Anjali Rao - Neuro",info:"Back Pain, Headache"},{name:"Dr. Karthik - Dentist",info:"Tooth Pain"},{name:"Dr. Lakshmi - Pediatrician",info:"Child Fever"}];
-function renderSym(){document.getElementById('symGrid').innerHTML=syms.map(s=>`<div class="sbox ${selSym===s.name?'selected':''}" data-name="${s.name}" onclick="pickSym('${s.name}')"><span style="font-size:18px;display:block">${s.icon}</span>${s.name}</div>`).join('');}
-function pickSym(n){selSym=n;document.querySelectorAll('.sbox').forEach(b=>{b.classList.toggle('selected', b.dataset.name===n);});}
-function openTab(id){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');if(id==='queue')renderQueue();if(id==='log')renderLog();if(id==='doctor')renderDocCase();if(id==='doctors')renderDocs();}
-function genToken(){const combo=document.getElementById('comboSelect').value;if(combo)selSym=combo;let doc='General';if(selSym.includes('Back')||selSym.includes('Headache'))doc='Neuro';else if(selSym.includes('Skin'))doc='Derma';else if(selSym.includes('Chest'))doc='Cardio';else if(selSym.includes('Tooth'))doc='Dental';const token='TKN-'+(233+logs.length+1);logs.push({token,patient:document.getElementById('pname').value||'Archana',village:document.getElementById('village').value||'Bapatla',symptom:selSym,doctor:doc,status:'Waiting',medicine:'',time:new Date().toLocaleString('en-GB'),docName:''});localStorage.setItem('gram_logs_v4',JSON.stringify(logs));document.getElementById('tokMsg').innerText='✅ '+token+' Generated - '+selSym;updateCounts();setTimeout(()=>openTab('queue'),600);}
-function renderQueue(){const pend=logs.filter(l=>l.status==='Waiting');document.getElementById('qbody').innerHTML=pend.length?pend.map(l=>`<tr><td><b>${l.token}</b></td><td>${l.patient}</td><td>${l.symptom}</td><td>${l.doctor}</td><td><span class="badge-wait">⏳ Waiting</span></td></tr>`).join(''):`<tr><td colspan=5 style="text-align:center;padding:18px;color:#999">No Pending</td></tr>`;document.getElementById('qbadge').innerText=pend.length+' Pending';}
-function renderDocCase(){let pend=logs.filter(l=>l.status==='Waiting');if(pend.length===0){document.getElementById('docCase').innerHTML=`<div class="card-doc"><b>TKN-234 | Ramesh | Back Pain</b> <span class="badge-neuro">Neuro</span><br><small>Dr. Anjali Rao</small><div class="pres-box"><input id="medIn" class="input" placeholder="💊 Eg: Diclofenac 50mg + Paracetamol" style="background:#fff;margin-top:8px"><button class="btn btn-green" onclick="prescribeDemo()">✅ Prescribe → Log Book</button></div></div>`;return;}let cur=pend[0];document.getElementById('docCase').innerHTML=`<div class="card-doc"><b>${cur.token} | ${cur.patient} | ${cur.symptom}</b> <span class="badge-neuro">${cur.doctor}</span><div class="pres-box"><input id="medIn" class="input" placeholder="💊 Medicine" style="background:#fff;margin-top:8px"><button class="btn btn-green" onclick="doPrescribe('${cur.token}')">✅ Prescribe</button></div></div>`;}
-function prescribeDemo(){logs.push({token:"TKN-234",patient:"Ramesh",village:"Bapatla",symptom:"Back Pain + Headache",doctor:"Neuro",status:"Prescribed",medicine:"Diclofenac 50mg + Paracetamol 325mg - 1-0-1",time:new Date().toLocaleString('en-GB'),docName:"Dr. Anjali Rao"});localStorage.setItem('gram_logs_v4',JSON.stringify(logs));updateCounts();openTab('log');}
-function doPrescribe(t){const m=document.getElementById('medIn').value||'Paracetamol 500mg';logs=logs.map(l=>l.token===t?{...l,medicine:m,status:'Prescribed',docName:'Dr. Ravi Kumar'}:l);localStorage.setItem('gram_logs_v4',JSON.stringify(logs));updateCounts();openTab('log');}
-function filterLog(type){currentFilter=type;['filterAll','filterPres','filterPend'].forEach(id=>document.getElementById(id).classList.remove('active'));if(type==='All')document.getElementById('filterAll').classList.add('active');if(type==='Prescribed')document.getElementById('filterPres').classList.add('active');if(type==='Waiting')document.getElementById('filterPend').classList.add('active');renderLog();}
-function renderLog(){let filtered=logs;if(currentFilter==='Prescribed')filtered=logs.filter(l=>l.status==='Prescribed');if(currentFilter==='Waiting')filtered=logs.filter(l=>l.status==='Waiting');document.getElementById('logList').innerHTML=filtered.slice().reverse().map(l=>`<div class="log-entry"><b>${l.token} | ${l.patient} | ${l.symptom} | ${l.doctor}</b><br><span>💊 ${l.medicine||'Pending'} | 🕒 ${l.time} | <b>${l.status.toUpperCase()}</b></span></div>`).join('')||'<div style="text-align:center;padding:20px;color:#999">No '+currentFilter+' Logs</div>';}
-function clearLogs(){if(confirm('Clear All Logs?')){localStorage.removeItem('gram_logs_v4');logs=[{token:"TKN-233",patient:"Archana",village:"Bapatla",symptom:"Viral Fever",doctor:"General",status:"Prescribed",medicine:"Paracetamol 500mg",time:"05-09-2026 10:30 AM",docName:"Dr. Ravi"}];localStorage.setItem('gram_logs_v4',JSON.stringify(logs));currentFilter='All';filterLog('All');updateCounts();renderLog();}}
-function renderDocs(){document.getElementById('docsList').innerHTML=docs.map(d=>`<div class="doc-card"><div><b>${d.name}</b><br><small>${d.info}</small></div><div class="online">● Online</div></div>`).join('');}
-function updateCounts(){document.getElementById('totalC').innerText=logs.length;document.getElementById('presC').innerText=logs.filter(l=>l.status==='Prescribed').length;document.getElementById('pendC').innerText=logs.filter(l=>l.status==='Waiting').length;document.getElementById('qbadge').innerText=logs.filter(l=>l.status==='Waiting').length+' Pending';}
-renderSym();renderQueue();renderLog();renderDocs();renderDocCase();updateCounts();
-</script></body></html>
+let selSym="Viral Fever";
+let currentFilter="All";
+let logs=JSON.parse(localStorage.getItem('gram_v6')||'null')||[{token:"TKN-233",patient:"Archana",village:"Bapatla",symptom:"Viral Fever",doctor:"General",status:"Prescribed",medicine:"Paracetamol 500mg",time:"05-09-2026 10:30 AM",docName:"Dr. Ravi"}];
+
+const syms=[
+{name:"Viral Fever",icon:"🤧"},
+{name:"Fever",icon:"🌡️"},
+{name:"Cough",icon:"😷"},
+{name:"Back Pain",icon:"🧍"},
+{name:"Skin Rash",icon:"🧴"},
+{name:"Chest Pain",icon:"❤️"},
+{name:"Headache",icon:"🧠"},
+{name:"Tooth Pain",icon:"🦷"}
+];
+
+const docs=[
+{name:"Dr. Ravi Kumar - General Physician",info:"Viral Fever, Fever, Cough | Bapatla PHC"},
+{name:"Dr. Priya Sharma - Dermatologist",info:"Skin Rash, Allergy | Guntur"},
+{name:"Dr. Suresh Reddy - Cardiologist",info:"Chest Pain, BP | Vijayawada"},
+{name:"Dr. Anjali Rao - Neurologist",info:"Back Pain, Headache | Hyderabad"},
+{name:"Dr. Karthik - Dentist",info:"Tooth Pain | Bapatla Dental"},
+{name:"Dr. Lakshmi - Pediatrician",info:"Child Fever | Bapatla"}
+];
+
+function renderSym(){
+  let h="";
+  for(let i=0;i<syms.length;i++){
+    let s=syms[i];
+    let sel = selSym===s.name? ' selected' : '';
+    h+=`<div class="sbox${sel}" onclick="pickSym('${s.name}')"><span style="font-size:18px;display:block">${s.icon}</span>${s.name}</div>`;
+  }
+  document.getElementById('symGrid').innerHTML=h;
+}
+
+function pickSym(n){
+  selSym=n;
+  renderSym();
+}
+
+function openTab(id){
+  let cs=document.querySelectorAll('.tab-content');
+  for(let i=0;i<cs.length;i++) cs[i].classList.remove('active');
+  let ts=document.querySelectorAll('.tab');
+  for(let i=0;i<ts.length;i++) ts[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='queue') renderQueue();
+  if(id==='log') renderLog();
+  if(id==='doctor') renderDocCase();
+  if(id==='doctors') renderDocs();
+}
+
+function genToken(){
+  let combo=document.getElementById('comboSelect').value;
+  if(combo) selSym=combo;
+  let doc='General';
+  if(selSym.includes('Back')||selSym.includes('Headache')) doc='Neuro';
+  else if(selSym.includes('Skin')) doc='Derma';
+  else if(selSym.includes('Chest')) doc='Cardio';
+  else if(selSym.includes('Tooth')) doc='Dental';
+  let token='TKN-'+(233+logs.length+1);
+  logs.push({token:token,patient:document.getElementById('pname').value||'Archana',village:document.getElementById('village').value||'Bapatla',symptom:selSym,doctor:doc,status:'Waiting',medicine:'',time:new Date().toLocaleString('en-GB'),docName:''});
+  localStorage.setItem('gram_v6',JSON.stringify(logs));
+  document.getElementById('tokMsg').innerHTML='✅ '+token+' Generated - '+selSym;
+  updateCounts();
+  setTimeout(function(){openTab('queue');},500);
+}
+
+function renderQueue(){
+  let pend=[];
+  for(let i=0;i<logs.length;i++) if(logs[i].status==='Waiting') pend.push(logs[i]);
+  if(pend.length===0){
+    document.getElementById('qbody').innerHTML='<tr><td colspan=5 style="text-align:center;padding:18px;color:#999">No Pending - Add Patient First</td></tr>';
+  } else {
+    let h="";
+    for(let i=0;i<pend.length;i++){
+      let l=pend[i];
+      h+=`<tr><td><b>${l.token}</b></td><td>${l.patient}</td><td>${l.symptom}</td><td>${l.doctor}</td><td><span class="badge-wait">⏳ Waiting</span></td></tr>`;
+    }
+    document.getElementById('qbody').innerHTML=h;
+  }
+  document.getElementById('qbadge').innerText=pend.length+' Pending';
+}
+
+function renderDocCase(){
+  let pend=[];
+  for(let i=0;i<logs.length;i++) if(logs[i].status==='Waiting') pend.push(logs[i]);
+  if(pend.length===0){
+    document.getElementById('docCase').innerHTML='<div class="card-doc"><div><b>TKN-234 | Ramesh | Back Pain + Headache</b> <span class="badge-neuro">Neuro</span><br><small>Dr. Anjali Rao - Neurologist</small></div><div class="pres-box"><div style="font-weight:700">🧑‍⚕️ Doctor - Prescription:</div><input id="medIn" class="input" placeholder="💊 Eg: Diclofenac 50mg + Paracetamol 325mg" style="background:white;margin-top:8px"><button class="btn btn-green" onclick="prescribeDemo()">✅ Prescribe → Move to Log Book</button></div></div>';
+    return;
+  }
+  let cur=pend[0];
+  document.getElementById('docCase').innerHTML='<div class="card-doc"><div><b>'+cur.token+' | '+cur.patient+' | '+cur.symptom+'</b> <span class="badge-neuro">'+cur.doctor+'</span></div><div class="pres-box"><div style="font-weight:700">🧑‍⚕️ Doctor - Prescription:</div><input id="medIn" class="input" placeholder="💊 Medicine" style="background:white;margin-top:8px"><button class="btn btn-green" onclick="doPrescribe(\''+cur.token+'\')">✅ Prescribe → Move to Log Book</button></div></div>';
+}
+
+function prescribeDemo(){
+  logs.push({token:"TKN-234",patient:"Ramesh",village:"Bapatla",symptom:"Back Pain + Headache",doctor:"Neuro",status:"Prescribed",medicine:"Diclofenac 50mg + Paracetamol 325mg - 1-0-1",time:new Date().toLocaleString('en-GB'),docName:"Dr. Anjali Rao"});
+  localStorage.setItem('gram_v6',JSON.stringify(logs));
+  updateCounts();
+  openTab('log');
+}
+
+function doPrescribe(t){
+  let m=document.getElementById('medIn').value||'Paracetamol 500mg';
+  for(let i=0;i<logs.length;i++) if(logs[i].token===t){logs[i].medicine=m;logs[i].status='Prescribed';logs[i].docName='Dr. Ravi Kumar';}
+  localStorage.setItem('gram_v6',JSON.stringify(logs));
+  updateCounts();
+  openTab('log');
+}
+
+function filterLog(type){
+  currentFilter=type;
+  document.getElementById('filterAll').classList.remove('active');
+  document.getElementById('filterPres').classList.remove('active');
+  document.getElementById('filterPend').classList.remove('active');
+  if(type==='All') document.getElementById('filterAll').classList.add('active');
+  if(type==='Prescribed') document.getElementById('filterPres').classList.add('active');
+  if(type==='Waiting') document.getElementById('filterPend').classList.add('active');
+  renderLog();
+}
+
+function renderLog(){
+  let filtered=logs;
+  if(currentFilter==='Prescribed') filtered=logs.filter(function(l){return l.status==='Prescribed';});
+  if(currentFilter==='Waiting') filtered=logs.filter(function(l){return l.status==='Waiting';});
+  let h="";
+  if(filtered.length===0){
+    h='<div style="text-align:center;padding:20px;color:#999">No '+currentFilter+' Logs</div>';
+  } else {
+    for(let i=filtered.length-1;i>=0;i--){
+      let l=filtered[i];
+      h+='<div class="log-entry"><b>'+l.token+' | '+l.patient+' | '+l.symptom+' | '+l.doctor+'</b><br><span>💊 '+(l.medicine||'Pending')+' | 🕒 '+l.time+' | 🧑‍⚕️ '+(l.docName||'Dr. Ravi')+' | <b style="color:#2e7d32">'+l.status.toUpperCase()+'</b></span></div>';
+    }
+  }
+  document.getElementById('logList').innerHTML=h;
+}
+
+function clearLogs(){
+  if(confirm('Clear all logs?')){
+    localStorage.removeItem('gram_v6');
+    logs=[{token:"TKN-233",patient:"Archana",village:"Bapatla",symptom:"Viral Fever",doctor:"General",status:"Prescribed",medicine:"Paracetamol 500mg",time:"05-09-2026 10:30 AM",docName:"Dr. Ravi"}];
+    localStorage.setItem('gram_v6',JSON.stringify(logs));
+    currentFilter='All';
+    filterLog('All');
+    updateCounts();
+  }
+}
+
+function renderDocs(){
+  let h="";
+  for(let i=0;i<docs.length;i++){
+    let d=docs[i];
+    h+='<div class="doc-card"><div><b>'+d.name+'</b><br><small>'+d.info+'</small></div><div class="online">● Online</div></div>';
+  }
+  document.getElementById('docsList').innerHTML=h;
+}
+
+function updateCounts(){
+  let total=logs.length;
+  let pres=0,pend=0;
+  for(let i=0;i<logs.length;i++){
+    if(logs[i].status==='Prescribed') pres++;
+    if(logs[i].status==='Waiting') pend++;
+  }
+  document.getElementById('totalC').innerText=total;
+  document.getElementById('presC').innerText=pres;
+  document.getElementById('pendC').innerText=pend;
+  document.getElementById('qbadge').innerText=pend+' Pending';
+}
+
+renderSym();
+renderQueue();
+renderLog();
+renderDocs();
+renderDocCase();
+updateCounts();
+</script>
+</body>
+</html>
