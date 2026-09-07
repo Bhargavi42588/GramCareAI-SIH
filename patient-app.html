@@ -21,6 +21,21 @@ input,select{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:1px s
 <div class="card">
   <h3>1. ABHA Login</h3>
   <input id="abha" placeholder="Enter ABHA ID / Aadhaar - उदा. 91-1234-5678">
+  <div style="display:flex; gap:8px; align-items:center;">
+  <input id="abha" placeholder="Enter ABHA Id / Aadhaar - उदा. 91-1234-5678" style="flex:1;">
+  <button onclick="thumbScan()" style="background:#22c55e; color:white; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">
+    👍 Thumb
+  </button>
+</div>
+<button onclick="login()" style="margin-top:8px;">Login / लॉगिन करें</button>
+
+<script>
+function thumbScan(){
+  alert("👍 Thumb Scanned! ABHA details fetched!");
+  document.getElementById("abha").value = "91-1234-5678-9012";
+  document.getElementById("userInfo").innerHTML = "✅ Verified: Archana, Bapatla, Age 28 | Thumb Verified";
+}
+</script>
   <button onclick="login()">Login / लॉगिन करा</button>
   <p id="userInfo" style="font-size:13px;color:green"></p>
 </div>
