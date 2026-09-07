@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramCareAI - FINAL V8 Fresh</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>.tab-active{border-bottom:3px solid #1e40af;color:#1e40af;font-weight:700}.box{cursor:pointer}.box.sel{background:#dcfce7;border-color:#16a34a;font-weight:700}</style>
+</head>
+<body class="bg-[#6C5CE7] min-h-screen p-2">
+<div class="max-w-3xl mx-auto bg-white rounded-[20px] overflow-hidden shadow-2xl">
+<div class="bg-[#2D2B8F] text-white p-4 text-center relative">
+<div class="flex justify-between items-center">
+<div></div>
+<div><h1 class="text-2xl font-bold">🏥 GramCareAI</h1><p class="text-xs">Integrated Rural Health Platform</p></div>
+<button onclick="toggleLang()" id="langBtn" class="bg-white text-[#2D2B8F] px-3 py-1 rounded-full text-xs font-bold">తెలుగు</button>
+</div>
+</div>
+<div class="flex border-b bg-gray-50 text-[13px]">
+<button onclick="showTab('patient')" id="t-patient" class="tab-active px-4 py-3">👩 Patient</button>
+<button onclick="showTab('queue')" id="t-queue" class="px-4 py-3">📋 Queue 1 Pending</button>
+<button onclick="showTab('doctor')" id="t-doctor" class="px-4 py-3">💊 Doctor Rx</button>
+<button onclick="showTab('log')" id="t-log" class="px-4 py-3">📒 Log Book</button>
+<button onclick="showTab('donline')" id="t-donline" class="px-4 py-3">👨‍⚕️ Doctors Online</button>
+</div>
+<div class="p-4">
+<div id="tab-patient">
+<h2 class="font-bold mb-2">1️⃣ Patient - Symptom Select / రోగి - లక్షణాలు</h2>
+<input id="pname" placeholder="Patient Name / రోగి పేరు - Bhargavi" class="w-full border rounded-lg p-3 mb-2 text-sm">
+<input placeholder="Village / గ్రామం - Bapatla" class="w-full border rounded-lg p-3 mb-3 text-sm">
+<div class="grid grid-cols-2 gap-2 mb-3">
+<div class="box border rounded-xl p-3 text-center" data-s="Viral Fever">🤧<br><span class="t" data-en="Viral Fever" data-te="వైరల్ జ్వరం">Viral Fever</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Fever">🌡️<br><span class="t" data-en="Fever" data-te="జ్వరం">Fever</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Cough">😮‍💨<br><span class="t" data-en="Cough" data-te="దగ్గు">Cough</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Back Pain">🧍<br><span class="t" data-en="Back Pain" data-te="నడుము నొప్పి">Back Pain</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Skin Rash">🧴<br><span class="t" data-en="Skin Rash" data-te="చర్మ దద్దుర్లు">Skin Rash</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Chest Pain">❤️<br><span class="t" data-en="Chest Pain" data-te="ఛాతీ నొప్పి">Chest Pain</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Headache">🧠<br><span class="t" data-en="Headache" data-te="తలనొప్పి">Headache</span></div>
+<div class="box border rounded-xl p-3 text-center" data-s="Tooth Pain">🦷<br><span class="t" data-en="Tooth Pain" data-te="పంటి నొప్పి">Tooth Pain</span></div>
+</div>
+<button onclick="showTab('queue')" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">🎫 Token Generate - టోకెన్ తీసుకోండి → Queue</button>
+</div>
+<div id="tab-queue" class="hidden"><h2 class="font-bold">📋 Queue - TKN-235 Bhargavi Waiting</h2><p class="text-sm mt-2 bg-orange-50 p-3 rounded">TKN-235 | Bhargavi | Viral Fever + Cough | ⏳ Waiting</p><button onclick="showTab('doctor')" class="w-full mt-4 bg-orange-500 text-white py-3 rounded-xl font-bold">Go to Doctor Rx</button></div>
+<div id="tab-doctor" class="hidden"><h2 class="font-bold">💊 Doctor Prescription</h2><input placeholder="Medicine / మందు" class="w-full border rounded-lg p-3 mt-2"><button onclick="showTab('log')" class="w-full mt-3 bg-green-600 text-white py-3 rounded-xl font-bold">✅ Prescribe → Log Book / లాగ్ బుక్ కి పంపు</button></div>
+<div id="tab-log" class="hidden"><h2 class="font-bold">📒 Log Book - 2 Total, 1 Prescribed, 1 Pending</h2><p class="text-sm mt-2 bg-gray-50 p-2 rounded">TKN-235 Bhargavi - 07/09/2026 - WAITING</p><p class="text-sm mt-1 bg-gray-50 p-2 rounded">TKN-233 Archana - Paracetamol - PRESCRIBED</p></div>
+<div id="tab-donline" class="hidden"><h2 class="font-bold">👨‍⚕️ 6 Doctors Online ✅</h2><p class="text-sm mt-2">Dr. Ravi - General | Dr. Priya - Derma | Dr. Suresh - Cardio | Dr. Anjali - Neuro | Dr. Karthik - Dentist | Dr. Lakshmi - Child</p></div>
+</div>
+</div>
+<script>
+let sel=[];let isTe=false;
+document.querySelectorAll('.box').forEach(b=>{b.addEventListener('click',()=>{b.classList.toggle('sel');})});
+function showTab(n){['patient','queue','doctor','log','donline'].forEach(x=>{document.getElementById('tab-'+x).classList.add('hidden')});document.getElementById('tab-'+n).classList.remove('hidden')}
+function toggleLang(){isTe=!isTe;document.getElementById('langBtn').innerText=isTe?'English':'తెలుగు';document.querySelectorAll('.t').forEach(el=>{el.innerText=isTe?el.dataset.te:el.dataset.en;})}
+</script>
+</body>
+  </html>
