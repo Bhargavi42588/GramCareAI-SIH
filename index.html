@@ -55,6 +55,22 @@ body{background:linear-gradient(135deg,#7a7cf0,#6a5af9);min-height:100vh;padding
 <div id="patient" class="tab-content active">
 <b>1️⃣ Patient - Symptom Select</b>
 <input id="pname" class="input" placeholder="Patient Name">
+  <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+  <input id="pname" class="input" placeholder="Patient Name" style="flex:1;">
+  <button onclick="thumbScan()" type="button" style="background:#22c55e; color:white; border:none; padding:12px 16px; border-radius:10px; font-weight:bold; cursor:pointer;">👍 Thumb</button>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+  <input id="village" class="input" placeholder="Village" style="flex:1;">
+  <span id="thumbStatus" style="font-size:12px; color:green; font-weight:bold;"></span>
+</div>
+<script>
+function thumbScan(){
+  document.getElementById("pname").value="Archana";
+  document.getElementById("village").value="Bapatla | ABHA: 91-1234-5678";
+  document.getElementById("thumbStatus").innerHTML="✅ Verified";
+  alert("👍 Thumb Scanned! ABHA nunchi details vachayi - Archana, Bapatla");
+}
+</script>
 <input id="village" class="input" placeholder="Village">
 <div style="font-weight:700;margin:8px 0">Click Boxes:</div>
 <div class="grid" id="symGrid"></div>
