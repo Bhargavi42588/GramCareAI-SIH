@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramCareAI V18 - FINAL 100% Buttons Working</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#6C5CE7;font-family:Arial,sans-serif;padding:8px}
+.card{background:white;border-radius:24px;overflow:hidden;max-width:700px;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+.header{background:#2D2B8F;color:white;padding:18px;text-align:center;position:relative}
+.header h1{font-size:22px}
+.lang{position:absolute;top:10px;right:10px;background:white;color:#2D2B8F;border:none;padding:6px 14px;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer}
+.tabs{display:flex;background:#F3F4F6;border-bottom:2px solid #E5E7EB;overflow:auto}
+.tab{padding:12px 10px;font-size:11px;font-weight:700;border:none;background:#F3F4F6;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;flex:1}
+.tab.active{background:white;color:#1E40AF;border-bottom:3px solid #1E40AF}
+.content{padding:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.box2{border:2px solid #BFDBFE;background:#EFF6FF;border-radius:16px;padding:12px;text-align:center}
+.thumb-circle,.voice-circle{width:70px;height:70px;background:white;border:2px solid #60A5FA;border-radius:50%;margin:8px auto;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:24px}
+.voice-circle{border-color:#C084FC}
+.input{width:100%;border:2px solid #E5E7EB;border-radius:14px;padding:12px;font-size:13px;margin-bottom:8px}
+.box{border:2px solid #E5E7EB;border-radius:14px;padding:14px;text-align:center;cursor:pointer;background:white}
+.box.sel{background:#DCFCE7;border-color:#16A34A;font-weight:700}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.btn{width:100%;padding:14px;border-radius:14px;font-weight:700;border:none;cursor:pointer;font-size:14px}
+.btn-green{background:#16A34A;color:white}
+.btn-blue{background:#2563EB;color:white}
+.hidden{display:none}
+.alert{padding:10px;border-radius:10px;margin-bottom:10px;font-size:12px}
+.alert-green{background:#F0FDF4;border:1px solid #BBF7D0}
+.med-card{background:#F0FDF4;border:2px solid #BBF7D0;border-radius:14px;padding:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<button id="langBtn" class="lang">తెలుగు</button>
+<h1>🏥 GramCareAI V18 FINAL</h1>
+<p style="font-size:10px;margin-top:6px">100% Buttons Working | Queue Fixed | Auto Medicine Telugu English</p>
+</div>
+<div class="tabs">
+<button id="t-patient" class="tab active">👩 Patient</button>
+<button id="t-queue" class="tab">📋 Queue <span id="qcount">0</span></button>
+<button id="t-doctor" class="tab">💊 Rx</button>
+<button id="t-log" class="tab">📒 Log</button>
+<button id="t-donline" class="tab">👨‍⚕️ Doctors</button>
+</div>
+<div class="content">
+<div id="tab-patient">
+<div class="grid2">
+<div class="box2">
+<div style="font-weight:700;font-size:11px;color:#1E40AF">🔐 Thumb - 8 Names</div>
+<div id="thumbBtn" class="thumb-circle"><div>👆</div><div style="font-size:10px;font-weight:700">THUMB</div></div>
+<div id="thumbStatus" style="font-size:10px;font-weight:700;color:#2563EB">Click - Random Name</div>
+</div>
+<div class="box2" style="border-color:#D8B4FE;background:#FAF5FF">
+<div style="font-weight:700;font-size:11px;color:#6B21A8">🎤 Voice → Type Auto</div>
+<div id="voiceBtn" class="voice-circle"><div id="voiceIcon">🎙️</div><div style="font-size:10px;font-weight:700">VOICE</div></div>
+<div id="voiceStatus" style="font-size:10px;font-weight:700;color:#7E22CE">Click to Speak</div>
+</div>
+</div>
+<div id="aadhaarDetails" class="alert alert-green hidden"></div>
+<div style="background:#FFFBEB;border:2px solid #FDE68A;border-radius:12px;padding:10px;margin-bottom:10px">
+<div style="display:flex;gap:6px">
+<input id="voiceText" class="input" style="margin-bottom:0;flex:1;border-color:#7C3AED;background:#F5F3FF" placeholder="Voice → Type auto - e.g. jwaram daggu">
+<button id="detectBtn" class="btn" style="width:80px;background:#7C3AED;color:white;padding:10px">Detect</button>
+</div>
+<div id="voiceResult" class="hidden" style="margin-top:8px;background:white;border-radius:8px;padding:8px;font-size:12px">Heard: "<span id="heardText" style="color:#7C3AED;font-weight:700"></span>" → <b id="voiceSelected" style="color:#16A34A"></b></div>
+</div>
+<input id="pname" class="input" placeholder="Patient Name - e.g. Bhargavi">
+<input id="age" class="input" type="number" placeholder="Age - 32">
+<input id="village" class="input" placeholder="Village - Bapatla">
+<div style="font-weight:700;margin:10px 0 8px">Click Boxes: (OLD WORKING)</div>
+<div class="boxes">
+<div class="box" data-s="Viral Fever"><div style="font-size:24px">🤧</div>Viral Fever</div>
+<div class="box" data-s="Fever"><div style="font-size:24px">🌡️</div>Fever</div>
+<div class="box" data-s="Cough"><div style="font-size:24px">😷</div>Cough</div>
+<div class="box" data-s="Back Pain"><div style="font-size:24px">🧍</div>Back Pain</div>
+<div class="box" data-s="Skin Rash"><div style="font-size:24px">🧴</div>Skin Rash</div>
+<div class="box" data-s="Chest Pain"><div style="font-size:24px">❤️</div>Chest Pain</div>
+<div class="box" data-s="Headache"><div style="font-size:24px">🧠</div>Headache</div>
+<div class="box" data-s="Tooth Pain"><div style="font-size:24px">🦷</div>Tooth Pain</div>
+</div>
+<select id="combo" class="input" style="background:#F9FAFB">
+<option value="">-- Select Combo -- 15 Options</option>
+<option>Viral Fever + Cough</option>
+<option>Fever + Cough</option>
+<option>Fever + Headache</option>
+<option>Fever + Headache + Cough</option>
+<option>Viral Fever + Headache</option>
+<option>Back Pain + Headache</option>
+<option>Chest Pain + Cough</option>
+<option>Skin Rash + Fever</option>
+<option>Tooth Pain + Fever</option>
+<option>Headache + Cough</option>
+<option>Viral Fever + Cough + Headache</option>
+<option>Chest Pain + Fever + Cough</option>
+<option>Back Pain + Fever</option>
+<option>Skin Rash + Cough</option>
+<option>Viral Fever + Skin Rash</option>
+</select>
+<button id="genTokenBtn" class="btn btn-green">🎫 Token Generate → Queue Pending ki</button>
+<div id="tokenMsg" class="hidden alert alert-green" style="margin-top:8px;text-align:center;font-weight:700;color:#16A34A"></div>
+</div>
+<div id="tab-queue" class="hidden">
+<div style="font-weight:700">📋 Queue - Pending - With Age - FIXED</div>
+<div style="background:#F9FAFB;border-radius:12px;padding:10px;margin-top:10px;font-size:12px">
+<div style="display:grid;grid-template-columns:0.8fr 1fr 0.4fr 1.2fr 0.7fr;font-weight:700;border-bottom:2px solid #E5E7EB;padding-bottom:6px"><span>Token</span><span>Patient</span><span>Age</span><span>Symptom</span><span>Status</span></div>
+<div id="queueList"><div style="padding:20px;text-align:center;color:#6B7280">No pending - Generate token</div></div>
+</div>
+<div style="margin-top:14px;background:#EFF6FF;border:2px solid #BFDBFE;border-radius:12px;padding:12px">
+<button id="goDoctorBtn" class="btn btn-blue">👨‍⚕️ Go to Doctor Rx → Auto Medicine Display Avthundi</button>
+</div>
+</div>
+<div id="tab-doctor" class="hidden">
+<div style="font-weight:700">💊 Doctor Dashboard - Auto Medicine Telugu English</div>
+<div style="border:2px solid #FDE68A;background:#FFFBEB;border-radius:14px;padding:14px;margin-top:10px">
+<p id="docHead" style="font-weight:700;font-size:13px">No patient - Generate token first</p>
+<p id="docSymptom" style="font-size:12px;color:#6B7280;margin-top:4px"></p>
+<div id="autoMedCard" class="med-card hidden">
+<div style="font-weight:700;color:#166534;margin-bottom:8px">💊 Auto Medicine - Based on Problem:</div>
+<div id="medEnglish" style="background:white;border-radius:10px;padding:10px;margin-bottom:8px;font-size:12px"></div>
+<div id="medTelugu" style="background:#FEF3C7;border-radius:10px;padding:10px;font-size:12px"></div>
+</div>
+<input id="med" class="input" placeholder="Medicine auto-fill - can edit" style="margin-top:12px">
+<button id="prescribeBtn" class="btn btn-green" style="margin-top:12px">✅ Prescribe → Log Book</button>
+</div>
+</div>
+<div id="tab-log" class="hidden">
+<div style="font-weight:700">📒 Log Book - With Age & Auto Medicine</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;text-align:center">
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:10px"><div id="totalCount" style="font-weight:700">0</div><div style="font-size:11px">Total</div></div>
+<div style="border:2px solid #BBF7D0;border-radius:12px;padding:10px;background:#F0FDF4"><div id="presCount" style="font-weight:700">0</div><div style="font-size:11px">Prescribed</div></div>
+<div style="border:2px solid #FECACA;border-radius:12px;padding:10px;background:#FEF2F2"><div id="pendCount" style="font-weight:700">0</div><div style="font-size:11px">Pending</div></div>
+</div>
+<div id="logList" style="margin-top:12px"></div>
+</div>
+<div id="tab-donline" class="hidden">
+<div style="font-weight:700">👨‍⚕️ 6 Doctors Online - All Online ✅</div>
+<div style="margin-top:10px;font-size:13px">
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px;margin-bottom:8px">Dr. Ravi Kumar - Bapatla PHC - ● Online</div>
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px;margin-bottom:8px">Dr. Priya Sharma - Guntur - ● Online</div>
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px;margin-bottom:8px">Dr. Suresh Reddy - Vijayawada - ● Online</div>
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px;margin-bottom:8px">Dr. Anjali Rao - Hyderabad - ● Online</div>
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px;margin-bottom:8px">Dr. Karthik - Dental - Bapatla - ● Online</div>
+<div style="border:2px solid #E5E7EB;border-radius:12px;padding:12px">Dr. Lakshmi - Child - Bapatla - ● Online</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+var sel=[];var tokenNum=100;var logs=[];var isTe=false;
+var persons=[{name:'Bhargavi',age:'32',village:'Bapatla'},{name:'Ramesh',age:'45',village:'Guntur'},{name:'Lakshmi',age:'28',village:'Chirala'},{name:'Suresh',age:'50',village:'Vijayawada'},{name:'Anjali',age:'22',village:'Hyderabad'},{name:'Karthik',age:'35',village:'Tenali'},{name:'Priya',age:'30',village:'Repalle'},{name:'Bujji Rao',age:'60',village:'Ponnur'}];
+var medicineMap={
+'Viral Fever':{en:'Paracetamol 650mg twice daily + Azithromycin + ORS',te:'వైరల్ జ్వరం మందు: పారాసిటమాల్ 650mg రోజుకి 2 సార్లు + అజిత్రోమైసిన్'},
+'Fever':{en:'Paracetamol 650mg every 6 hours + Water',te:'జ్వరం మందు: పారాసిటమాల్ 650mg ప్రతి 6 గంటలకు'},
+'Cough':{en:'Cough Syrup Ascoril 10ml thrice + Cetirizine night',te:'దగ్గు మందు: అస్కోరిల్ సిరప్ 10ml రోజుకి 3 సార్లు'},
+'Headache':{en:'Ibuprofen 400mg + Paracetamol twice + Rest',te:'తలనొప్పి మందు: ఇబుప్రోఫెన్ + పారాసిటమాల్'},
+'Back Pain':{en:'Diclofenac twice + Calcium + Hot fomentation',te:'నడుము నొప్పి మందు: డైక్లోఫెనాక్ + కాల్షియం'},
+'Chest Pain':{en:'Aspirin 75mg + ECG + Refer Cardiologist URGENT',te:'ఛాతీ నొప్పి మందు: ఆస్పిరిన్ + ఈసీజీ + కార్డియాలజిస్ట్'},
+'Skin Rash':{en:'Cetirizine night + Calamine lotion',te:'చర్మ దద్దుర్లు మందు: సెటిరిజిన్ + కాలమైన్'},
+'Tooth Pain':{en:'Metronidazole thrice + Ibuprofen twice + Dentist',te:'పంటి నొప్పి మందు: మెట్రోనిడాజోల్ + డెంటిస్ట్'}
+};
+function getMedicine(symptoms){
+var a=symptoms.split(' + ');var en=[];var te=[];
+for(var i=0;i<a.length;i++){var k=a[i].trim();if(medicineMap[k]){en.push(medicineMap[k].en);te.push(medicineMap[k].te);}}
+if(en.length==0){return {en:'Paracetamol 500mg twice daily',te:'సాధారణ మందు: పారాసిటమాల్'};}
+return {en:en.join(' | '),te:te.join(' | ')};
+}
+function showTab(n){
+var tabs=['patient','queue','doctor','log','donline'];
+for(var i=0;i<tabs.length;i++){document.getElementById('tab-'+tabs[i]).classList.add('hidden');document.getElementById('t-'+tabs[i]).classList.remove('active');}
+document.getElementById('tab-'+n).classList.remove('hidden');
+document.getElementById('t-'+n).classList.add('active');
+if(n=='doctor'){
+var waiting=[];for(var j=0;j<logs.length;j++){if(logs[j].status=='WAITING'){waiting.push(logs[j]);}}
+if(waiting.length>0){
+var latest=waiting[0];
+var med=getMedicine(latest.sym);
+document.getElementById('docHead').innerHTML=latest.token+' | '+latest.name+' | Age '+latest.age+' | Village '+latest.village;
+document.getElementById('docSymptom').innerHTML='Problem: <b>'+latest.sym+'</b>';
+document.getElementById('autoMedCard').classList.remove('hidden');
+document.getElementById('medEnglish').innerHTML='<b>🇬🇧 English:</b><br>'+med.en;
+document.getElementById('medTelugu').innerHTML='<b>🇮🇳 తెలుగు:</b><br>'+med.te;
+document.getElementById('med').value=med.en;
+}else{
+document.getElementById('docHead').innerHTML='No pending patient';
+document.getElementById('autoMedCard').classList.add('hidden');
+document.getElementById('med').value='';
+}
+}
+}
+function updateUI(){
+var q=document.getElementById('queueList');
+var pending=[];for(var i=0;i<logs.length;i++){if(logs[i].status=='WAITING'){pending.push(logs[i]);}}
+if(pending.length==0){q.innerHTML='<div style="padding:20px;text-align:center;color:#6B7280">No pending</div>';}
+else{q.innerHTML='';for(var k=0;k<pending.length;k++){var l=pending[k];q.innerHTML+='<div style="display:grid;grid-template-columns:0.8fr 1fr 0.4fr 1.2fr 0.7fr;padding:10px 0;border-bottom:1px solid #eee;font-size:12px"><span style="font-weight:700">'+l.token+'</span><span>'+l.name+'</span><span>'+l.age+'</span><span>'+l.sym+'</span><span style="background:#FFEDD5;padding:2px 6px;border-radius:10px;text-align:center">Waiting</span></div>';}}
+document.getElementById('qcount').innerHTML=pending.length;
+document.getElementById('totalCount').innerHTML=logs.length;
+var pres=0;for(var p=0;p<logs.length;p++){if(logs[p].status=='PRESCRIBED'){pres++;}}
+document.getElementById('presCount').innerHTML=pres;
+document.getElementById('pendCount').innerHTML=pending.length;
+var lg=document.getElementById('logList');
+if(logs.length==0){lg.innerHTML='<div style="padding:20px;text-align:center;color:#6B7280">No logs</div>';}
+else{lg.innerHTML='';for(var m=0;m<logs.length;m++){var item=logs[m];var mm=getMedicine(item.sym);lg.innerHTML+='<div style="border-left:4px solid '+(item.status=='WAITING'?'#22C55E':'#3B82F6')+';background:#F9FAFB;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px"><b>'+item.token+' | '+item.name+' | Age '+item.age+' | '+item.sym+'</b><br>🇬🇧 '+mm.en+'<br>🇮🇳 '+mm.te+'<br>💊 '+(item.med||mm.en)+' | '+item.time+' | '+item.status+'</div>';}}
+}
+function doThumb(){
+var s=document.getElementById('thumbStatus');var d=document.getElementById('aadhaarDetails');
+s.innerHTML='Scanning... 👆';s.style.color='#F97316';
+setTimeout(function(){
+var p=persons[Math.floor(Math.random()*persons.length)];
+s.innerHTML='✅ '+p.name+' Verified!';s.style.color='#16A34A';
+d.classList.remove('hidden');d.innerHTML='✅ <b>Aadhaar Verified!</b> Name: <b>'+p.name+'</b> | Age: <b>'+p.age+'</b> | Village: <b>'+p.village+'</b>';
+document.getElementById('pname').value=p.name;document.getElementById('age').value=p.age;document.getElementById('village').value=p.village;
+sel=['Viral Fever'];var boxes=document.querySelectorAll('.box');for(var i=0;i<boxes.length;i++){boxes[i].classList.remove('sel');if(sel.indexOf(boxes[i].getAttribute('data-s'))>-1){boxes[i].classList.add('sel');}}
+},1000);
+}
+function processVoice(t){
+if(!t||t.trim()==''){return;}
+var h=t.toLowerCase();
+document.getElementById('voiceText').value=t;
+document.getElementById('heardText').innerHTML=t;
+document.getElementById('voiceResult').classList.remove('hidden');
+var f=[];if(h.indexOf('jwaram')>-1||h.indexOf('fever')>-1||h.indexOf('jwar')>-1){f.push('Fever');}if(h.indexOf('viral')>-1){f.push('Viral Fever');}if(h.indexOf('daggu')>-1||h.indexOf('cough')>-1){f.push('Cough');}if(h.indexOf('tala')>-1||h.indexOf('head')>-1){f.push('Headache');}if(h.indexOf('nadumu')>-1||h.indexOf('back')>-1){f.push('Back Pain');}if(h.indexOf('chati')>-1||h.indexOf('chest')>-1){f.push('Chest Pain');}if(h.indexOf('charm')>-1||h.indexOf('skin')>-1){f.push('Skin Rash');}if(h.indexOf('panti')>-1||h.indexOf('tooth')>-1){f.push('Tooth Pain');}if(f.length==0){f=['Viral Fever','Cough'];}
+var uniq=[];for(var u=0;u<f.length;u++){if(uniq.indexOf(f[u])==-1){uniq.push(f[u]);}}sel=uniq;
+var boxes=document.querySelectorAll('.box');for(var b=0;b<boxes.length;b++){boxes[b].classList.remove('sel');if(sel.indexOf(boxes[b].getAttribute('data-s'))>-1){boxes[b].classList.add('sel');}}
+document.getElementById('voiceSelected').innerHTML=sel.join(' + ');
+document.getElementById('voiceStatus').innerHTML='✅ '+sel.join(' + ')+' - Typed!';
+}
+function startVoice(){
+var st=document.getElementById('voiceStatus');var icon=document.getElementById('voiceIcon');
+if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){st.innerHTML='Mic not supported - Type below';return;}
+try{
+var R=window.SpeechRecognition||window.webkitSpeechRecognition;var rec=new R();rec.lang='en-IN';rec.continuous=false;
+st.innerHTML='🔴 Listening...';icon.innerHTML='🔴';rec.start();
+rec.onresult=function(e){var txt=e.results[0][0].transcript;document.getElementById('voiceText').value=txt;processVoice(txt);st.innerHTML='✅ Detected!';icon.innerHTML='✅';setTimeout(function(){icon.innerHTML='🎙️';},2000);};
+rec.onerror=function(){st.innerHTML='⚠️ Mic error - Type below';icon.innerHTML='⌨️';};
+rec.onend=function(){if(icon.innerHTML=='🔴'){icon.innerHTML='🎙️';}};
+}catch(err){st.innerHTML='Error - Type below';}
+}
+function genToken(){
+var name=document.getElementById('pname').value.trim();var age=document.getElementById('age').value.trim();var vill=document.getElementById('village').value.trim();
+if(!name){alert('Please enter Patient Name');return;}
+if(!age){alert('Please enter Age');return;}
+var sym='';if(sel.length>0){sym=sel.join(' + ');}else{sym=document.getElementById('combo').value;}
+if(!sym||sym.indexOf('Select')>-1){alert('Please select symptom');return;}
+tokenNum++;var nt='TKN-'+tokenNum;logs.unshift({token:nt,name:name,age:age,village:vill,sym:sym,status:'WAITING',time:new Date().toLocaleString('en-IN')});
+updateUI();var msg=document.getElementById('tokenMsg');msg.classList.remove('hidden');msg.innerHTML='✅ '+nt+' | '+name+' | Age '+age+' | '+sym+' Generated!';showTab('queue');
+}
+function prescribe(){
+var w=null;for(var i=0;i<logs.length;i++){if(logs[i].status=='WAITING'){w=logs[i];break;}}
+if(!w){alert('No pending patient');return;}
+var med=document.getElementById('med').value.trim();if(!med){var auto=getMedicine(w.sym);med=auto.en;}
+w.status='PRESCRIBED';w.med=med;updateUI();alert('✅ Prescribed! Saved with Telugu + English');showTab('log');
+}
+window.onload=function(){
+document.getElementById('t-patient').onclick=function(){showTab('patient');};
+document.getElementById('t-queue').onclick=function(){showTab('queue');};
+document.getElementById('t-doctor').onclick=function(){showTab('doctor');};
+document.getElementById('t-log').onclick=function(){showTab('log');};
+document.getElementById('t-donline').onclick=function(){showTab('donline');};
+document.getElementById('thumbBtn').onclick=doThumb;
+document.getElementById('voiceBtn').onclick=startVoice;
+document.getElementById('detectBtn').onclick=function(){var v=document.getElementById('voiceText').value;processVoice(v);};
+document.getElementById('genTokenBtn').onclick=genToken;
+document.getElementById('goDoctorBtn').onclick=function(){showTab('doctor');};
+document.getElementById('prescribeBtn').onclick=prescribe;
+document.getElementById('langBtn').onclick=function(){isTe=!isTe;this.innerHTML=isTe?'English':'తెలుగు';};
+var boxes=document.querySelectorAll('.box');
+for(var i=0;i<boxes.length;i++){boxes[i].onclick=function(){this.classList.toggle('sel');var s=this.getAttribute('data-s');var idx=sel.indexOf(s);if(idx>-1){sel.splice(idx,1);}else{sel.push(s);}};}
+updateUI();
+console.log('V18 Loaded - All buttons working');
+};
+</script
